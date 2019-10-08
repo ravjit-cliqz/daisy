@@ -1,0 +1,37 @@
+package org.mozilla.reference.browser.freshtab
+
+import mozilla.components.feature.session.SessionUseCases
+import org.mozilla.reference.browser.freshtab.data.NewsItem
+
+class NewsInteractor(
+    private val loadUrlUseCase: SessionUseCases.LoadUrlUseCase,
+    private val getNewsUseCase: GetNewsUseCase,
+    private val newsView: NewsView,
+    private val onNewsItemSelected: () -> Unit
+) : NewsViewInteractor {
+
+    fun start() {
+        newsView.interactor = this
+    }
+
+    fun stop() {
+        newsView.interactor = null
+    }
+
+    override suspend fun getNews(): List<NewsItem> {
+        return getNewsUseCase.invoke()
+    }
+
+    override fun onOpenInNormalTab(item: NewsItem) {
+        loadUrlUseCase.invoke(item.url)
+        onNewsItemSelected()
+    }
+
+    override fun onOpenInNewNormalTab(item: NewsItem) {
+        TODO("not implemented")
+    }
+
+    override fun onOpenInPrivateTab(item: NewsItem) {
+        TODO("not implemented")
+    }
+}

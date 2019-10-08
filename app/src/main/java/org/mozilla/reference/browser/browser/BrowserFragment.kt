@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_browser.*
 import kotlinx.android.synthetic.main.fragment_browser.view.*
-import mozilla.components.feature.awesomebar.AwesomeBarFeature
+import androidx.lifecycle.lifecycleScope
 import mozilla.components.feature.session.ThumbnailsFeature
 import mozilla.components.feature.tabs.toolbar.TabsToolbarFeature
 import mozilla.components.support.base.feature.BackHandler
@@ -16,6 +16,8 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import org.mozilla.reference.browser.R
 import org.mozilla.reference.browser.UserInteractionHandler
 import org.mozilla.reference.browser.ext.requireComponents
+import org.mozilla.reference.browser.freshtab.FreshTabFeature
+import org.mozilla.reference.browser.freshtab.NewsFeature
 import org.mozilla.reference.browser.tabs.TabsTrayFragment
 
 /**
@@ -24,23 +26,25 @@ import org.mozilla.reference.browser.tabs.TabsTrayFragment
 class BrowserFragment : BaseBrowserFragment(), BackHandler, UserInteractionHandler {
     private val thumbnailsFeature = ViewBoundFeatureWrapper<ThumbnailsFeature>()
     private val readerViewFeature = ViewBoundFeatureWrapper<ReaderViewIntegration>()
+    private val newsFeature = ViewBoundFeatureWrapper<NewsFeature>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        AwesomeBarFeature(awesomeBar, toolbar, engineView)
-            .addSearchProvider(
-                requireContext(),
-                requireComponents.search.searchEngineManager,
-                requireComponents.useCases.searchUseCases.defaultSearch,
-                requireComponents.core.client)
-            .addSessionProvider(
-                requireComponents.core.sessionManager,
-                requireComponents.useCases.tabsUseCases.selectTab)
-            .addHistoryProvider(
-                requireComponents.core.historyStorage,
-                requireComponents.useCases.sessionUseCases.loadUrl)
-            .addClipboardProvider(requireContext(), requireComponents.useCases.sessionUseCases.loadUrl)
+        // TODO: Not sure if these features be wrapped in ViewBoundFeatureWrapper
+        FreshTabFeature(toolbar, freshTab, engineView,
+                requireComponents.core.sessionManager.selectedSession)
+
+        newsFeature.set(
+                feature = NewsFeature(
+                    newsView, lifecycleScope,
+                    requireComponents.useCases.sessionUseCases.loadUrl,
+                    requireComponents.useCases.getNewsUseCase) {
+                    freshTab.visibility = View.GONE
+                    engineView.asView().visibility = View.VISIBLE
+                },
+                owner = this,
+                view = view)
 
         TabsToolbarFeature(
             toolbar = toolbar,

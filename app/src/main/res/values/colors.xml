@@ -18,4 +18,8 @@
 
     <!-- Overriding color of tab counter icon in toolbar -->
     <color name="mozac_ui_tabcounter_default_tint" tools:ignore="UnusedResources">@color/icons</color>
+
+    <color name="textColorPrimary">#000000</color>
+
+    <color name="fresh_tab_news_background_color">#CCFFFFFF</color>
 </resources>

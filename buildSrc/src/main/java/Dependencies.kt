@@ -14,6 +14,7 @@ private object Versions {
     const val workmanager = "2.0.0"
     const val google_material = "1.0.0"
 
+    const val androidx_lifecycle = "2.2.0-alpha05"
     const val android_gradle_plugin = "3.4.1"
 
     const val mozilla_android_components = "+" // Always use the latest snapshot
@@ -96,6 +97,7 @@ object Deps {
     const val androidx_constraintlayout = "androidx.constraintlayout:constraintlayout:${Versions.androidx_constraintlayout}"
     const val androidx_preference = "androidx.preference:preference-ktx:${Versions.androidx_preference}"
     const val androidx_work_runtime = "androidx.work:work-runtime-ktx:${Versions.workmanager}"
+    const val androidx_lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.androidx_lifecycle}"
     const val google_material = "com.google.android.material:material:${Versions.google_material}"
 
     const val tools_androidgradle = "com.android.tools.build:gradle:${Versions.android_gradle_plugin}"

@@ -18,6 +18,8 @@ import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.feature.session.SettingsUseCases
 import mozilla.components.feature.tabs.TabsUseCases
 import org.mozilla.reference.browser.history.usecases.HistoryUseCases
+import org.mozilla.reference.browser.freshtab.GetNewsUseCase
+import org.mozilla.reference.browser.freshtab.data.source.NewsRepository
 
 /**
  * Component group for all use cases. Use cases are provided by feature
@@ -30,7 +32,8 @@ class UseCases(
     private val engineSettings: Settings,
     private val searchEngineManager: SearchEngineManager,
     private val client: Client,
-    private val historyStorage: HistoryStorage
+    private val historyStorage: HistoryStorage,
+    private val newsRepository: NewsRepository
 ) {
     /**
      * Use cases that provide engine interactions for a given browser session.
@@ -66,4 +69,7 @@ class UseCases(
      * Uses cases that provides history integration
      */
     val historyUseCases by lazy { HistoryUseCases(historyStorage) }
+
+    val getNewsUseCase: GetNewsUseCase by lazy { GetNewsUseCase(newsRepository) }
+
 }

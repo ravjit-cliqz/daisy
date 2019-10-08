@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Margins and paddings as per material design. Base - 8dp -->
     <dimen name = "margin_padding_size_small">8dp</dimen>
     <dimen name = "margin_padding_size_medium">16dp</dimen>
@@ -18,4 +19,6 @@
     <dimen name="two_line_list_item_height">72dp</dimen>
     <dimen name="two_line_list_item_icon_size">40dp</dimen>
 
+    <dimen name="freshtab_icons_size">50dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
 </resources>

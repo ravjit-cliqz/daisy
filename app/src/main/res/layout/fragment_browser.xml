@@ -22,17 +22,19 @@
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <mozilla.components.browser.awesomebar.BrowserAwesomeBar
-        android:id="@+id/awesomeBar"
+    <org.mozilla.reference.browser.freshtab.FreshTab
+        android:id="@+id/freshTab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/toolbar_height"
-        mozac:awesomeBarTitleTextColor="#ffffff"
-        mozac:awesomeBarDescriptionTextColor="#dddddd"
-        mozac:awesomeBarChipTextColor="#ffffff"
-        mozac:awesomeBarChipBackgroundColor="#444444" />
+        android:layout_marginTop="56dp"
+        android:visibility="gone">
+
+    <org.mozilla.reference.browser.freshtab.NewsView
+        android:id="@+id/newsView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    </org.mozilla.reference.browser.freshtab.FreshTab>
 
     <mozilla.components.feature.findinpage.view.FindInPageBar
         android:id="@+id/findInPageBar"
