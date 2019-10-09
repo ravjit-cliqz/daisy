@@ -6,6 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.support.base.feature.LifecycleAwareFeature
+import org.mozilla.reference.browser.freshtab.data.Result.Success
+import org.mozilla.reference.browser.freshtab.domain.GetNewsUseCase
 
 class NewsFeature(
     private val newsView: NewsView,
@@ -25,11 +27,15 @@ class NewsFeature(
     override fun start() {
         interactor.start()
         scope.launchWhenStarted {
-            val newsList = withContext(Dispatchers.IO) {
+            val result = withContext(Dispatchers.IO) {
                 interactor.getNews()
             }
             withContext(Dispatchers.Main) {
-                newsView.displayNews(newsList)
+                if (result is Success) {
+                    newsView.displayNews(result.data)
+                } else {
+                    newsView.hideNews()
+                }
             }
         }
     }

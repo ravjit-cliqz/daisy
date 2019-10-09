@@ -7,11 +7,13 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import org.mozilla.reference.browser.R
 import org.mozilla.reference.browser.freshtab.data.NewsItem
+import org.mozilla.reference.browser.freshtab.data.Result
 
 class NewsView @JvmOverloads constructor(
     context: Context,
@@ -44,6 +46,10 @@ class NewsView @JvmOverloads constructor(
         }
     }
 
+    fun hideNews() {
+        this.visibility = View.GONE
+    }
+
     private fun buildTitleSpannable(newsItem: NewsItem): CharSequence {
         val builder = SpannableStringBuilder()
         if (newsItem.breaking && newsItem.breakingLabel != null && !newsItem.breakingLabel.isEmpty()) {
@@ -68,7 +74,7 @@ class NewsView @JvmOverloads constructor(
 
 interface NewsViewInteractor {
 
-    suspend fun getNews(): List<NewsItem>
+    suspend fun getNews(): Result<List<NewsItem>>
 
     fun onOpenInNormalTab(item: NewsItem)
 

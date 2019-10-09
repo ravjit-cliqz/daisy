@@ -1,4 +1,4 @@
-package org.mozilla.reference.browser.freshtab.data.source
+package org.mozilla.reference.browser.freshtab.data.source.remote
 
 import mozilla.components.concept.fetch.Client
 import mozilla.components.concept.fetch.Headers
@@ -10,12 +10,17 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
 import org.mozilla.reference.browser.freshtab.data.NewsItem
+import org.mozilla.reference.browser.freshtab.data.Result
+import org.mozilla.reference.browser.freshtab.data.Result.Error
+import org.mozilla.reference.browser.freshtab.data.Result.Success
+import org.mozilla.reference.browser.freshtab.data.source.NewsDataSource
+import java.io.IOException
 import java.util.Locale
 import kotlin.collections.ArrayList
 
 class NewsRemoteDataSource(private val client: Client) : NewsDataSource {
 
-    override suspend fun getNews(): List<NewsItem> {
+    override suspend fun getNews(): Result<List<NewsItem>> {
         val url = getNewsUrl()
         val headers = MutableHeaders(
                 Headers.Names.CONTENT_TYPE to CONTENT_TYPE_JSON
@@ -27,11 +32,19 @@ class NewsRemoteDataSource(private val client: Client) : NewsDataSource {
                 body = Request.Body.fromString(NEWS_PAYLOAD)
         )
 
-        val response = client.fetch(request)
-        if (!response.isSuccess) {
-            throw RuntimeException("Error fetching news. Response code:${response.status}")
+        try {
+            val response = client.fetch(request)
+            if (response.isSuccess) {
+                return Success(response.toNewsList())
+            }
+            return Error(Exception("Error fetching news. Response code:${response.status}"))
+        } catch (e: Exception) {
+            when (e) {
+                // Known exceptions. Handle them.
+                is IOException, is JSONException -> return Error(e)
+                else -> throw e
+            }
         }
-        return response.toNewsList()
     }
 
     private fun getNewsUrl(): String {
@@ -76,38 +89,31 @@ class NewsRemoteDataSource(private val client: Client) : NewsDataSource {
     }
 }
 
+@Throws(JSONException::class)
 private fun Response.toNewsList(): List<NewsItem> {
     val responseBody = use { body.string() }
     val result = responseBody.run {
         JSONTokener(responseBody).nextValue() as JSONObject
     }
     val newsList = ArrayList<NewsItem>()
-    try {
-        val data = result.getJSONArray("results").getJSONObject(0)
-                .getJSONObject("snippet").getJSONObject("extra")
-        val articles = data.getJSONArray("articles")
-        for (i in 0 until articles.length()) {
-            try {
-                val article = articles.getJSONObject(i)
+    val data = result.getJSONArray("results").getJSONObject(0)
+            .getJSONObject("snippet").getJSONObject("extra")
+    val articles = data.getJSONArray("articles")
+    for (i in 0 until articles.length()) {
+        val article = articles.getJSONObject(i)
 
-                val url = article.optString("url", "")
-                val title = article.optString("title", "")
-                val description = article.optString("description", "")
-                val domain = article.optString("domain", "")
-                val shortTitle = article.optString("short_title", "")
-                val media = article.optString("media", "")
-                val breaking = article.optBoolean("breaking", false)
-                val breakingLabel = article.optString("breaking_label", "")
-                val isLocalNews = article.has("local_news")
-                val localLabel = article.optString("local_label", "")
-                newsList.add(NewsItem(url, title, description, domain, shortTitle, media,
-                        breakingLabel, breaking, isLocalNews, localLabel))
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
+        val url = article.optString("url", "")
+        val title = article.optString("title", "")
+        val description = article.optString("description", "")
+        val domain = article.optString("domain", "")
+        val shortTitle = article.optString("short_title", "")
+        val media = article.optString("media", "")
+        val breaking = article.optBoolean("breaking", false)
+        val breakingLabel = article.optString("breaking_label", "")
+        val isLocalNews = article.has("local_news")
+        val localLabel = article.optString("local_label", "")
+        newsList.add(NewsItem(url, title, description, domain, shortTitle, media,
+                breakingLabel, breaking, isLocalNews, localLabel))
     }
     return newsList
 }

@@ -6,9 +6,10 @@ package org.mozilla.reference.browser.browser
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_browser.*
 import kotlinx.android.synthetic.main.fragment_browser.view.*
-import androidx.lifecycle.lifecycleScope
+import mozilla.components.feature.awesomebar.AwesomeBarFeature
 import mozilla.components.feature.session.ThumbnailsFeature
 import mozilla.components.feature.tabs.toolbar.TabsToolbarFeature
 import mozilla.components.support.base.feature.BackHandler
@@ -30,6 +31,20 @@ class BrowserFragment : BaseBrowserFragment(), BackHandler, UserInteractionHandl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        AwesomeBarFeature(awesomeBar, toolbar, engineView)
+            .addSearchProvider(
+                requireContext(),
+                requireComponents.search.searchEngineManager,
+                requireComponents.useCases.searchUseCases.defaultSearch,
+                requireComponents.core.client)
+            .addSessionProvider(
+                requireComponents.core.sessionManager,
+                requireComponents.useCases.tabsUseCases.selectTab)
+            .addHistoryProvider(
+                requireComponents.core.historyStorage,
+                requireComponents.useCases.sessionUseCases.loadUrl)
+            .addClipboardProvider(requireContext(), requireComponents.useCases.sessionUseCases.loadUrl)
 
         // TODO: Not sure if these features be wrapped in ViewBoundFeatureWrapper
         FreshTabFeature(toolbar, freshTab, engineView,

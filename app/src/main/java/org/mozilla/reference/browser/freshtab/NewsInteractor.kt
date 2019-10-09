@@ -2,6 +2,8 @@ package org.mozilla.reference.browser.freshtab
 
 import mozilla.components.feature.session.SessionUseCases
 import org.mozilla.reference.browser.freshtab.data.NewsItem
+import org.mozilla.reference.browser.freshtab.data.Result
+import org.mozilla.reference.browser.freshtab.domain.GetNewsUseCase
 
 class NewsInteractor(
     private val loadUrlUseCase: SessionUseCases.LoadUrlUseCase,
@@ -18,7 +20,7 @@ class NewsInteractor(
         newsView.interactor = null
     }
 
-    override suspend fun getNews(): List<NewsItem> {
+    override suspend fun getNews(): Result<List<NewsItem>> {
         return getNewsUseCase.invoke()
     }
 
