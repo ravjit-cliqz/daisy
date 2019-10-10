@@ -2,18 +2,25 @@ package org.mozilla.reference.browser.freshtab
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
-import org.mozilla.reference.browser.R
+import android.widget.ScrollView
 
 class FreshTab @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : ScrollView(context, attrs, defStyleAttr) {
+
+    private var view: LinearLayout = LinearLayout(context)
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.freshtab_layout, this, true)
-        orientation = VERTICAL
+        view.orientation = LinearLayout.VERTICAL
+        addView(view)
+    }
+
+    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+        view.addView(child, params)
     }
 }
