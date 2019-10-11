@@ -4,12 +4,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import mozilla.components.browser.icons.IconRequest
 import org.mozilla.reference.browser.R
+import org.mozilla.reference.browser.ext.components
 import org.mozilla.reference.browser.freshtab.data.NewsItem
 
 class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInteractor)
-    : RecyclerView.ViewHolder(itemView), View.OnClickListener,
-        View.OnLongClickListener {
+    : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
     override fun onLongClick(v: View?): Boolean {
         return true
@@ -19,9 +20,10 @@ class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInterac
         newsItem?.let { interactor.onOpenInNormalTab(it) }
     }
 
+    private val iconView: ImageView = itemView.findViewById(R.id.icon_view)
+
     val urlView: TextView = itemView.findViewById(R.id.url_view)
     val titleView: TextView = itemView.findViewById(R.id.title_view)
-    val iconView: ImageView = itemView.findViewById(R.id.icon_view)
 
     private var newsItem: NewsItem? = null
 
@@ -32,5 +34,7 @@ class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInterac
 
     fun bind(newsItem: NewsItem) {
         this.newsItem = newsItem
+
+        itemView.context.components.core.icons.loadIntoView(iconView, IconRequest(newsItem.url))
     }
 }
