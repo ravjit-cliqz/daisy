@@ -5,8 +5,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cliqz.browser.freshtab.data.NewsItem
-//import mozilla.components.browser.icons.IconRequest
-//import org.mozilla.reference.browser.ext.components
 
 class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInteractor)
     : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
@@ -33,8 +31,6 @@ class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInterac
 
     fun bind(newsItem: NewsItem) {
         this.newsItem = newsItem
-
-        //itemView.context.components.core.icons.loadIntoView(iconView, IconRequest(newsItem.url))
-        // TODO: Load icon.
+        interactor.loadItemIcon(iconView, newsItem.url)
     }
 }

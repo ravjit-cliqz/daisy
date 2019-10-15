@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
@@ -80,4 +81,6 @@ interface NewsViewInteractor {
     fun onOpenInNewNormalTab(item: NewsItem)
 
     fun onOpenInPrivateTab(item: NewsItem)
+
+    fun loadItemIcon(view: ImageView, url: String)
 }

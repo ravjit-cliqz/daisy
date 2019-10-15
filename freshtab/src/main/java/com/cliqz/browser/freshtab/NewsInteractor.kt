@@ -1,5 +1,6 @@
 package com.cliqz.browser.freshtab
 
+import android.widget.ImageView
 import com.cliqz.browser.freshtab.data.NewsItem
 import com.cliqz.browser.freshtab.data.Result
 import com.cliqz.browser.freshtab.domain.GetNewsUseCase
@@ -9,7 +10,8 @@ class NewsInteractor(
     private val loadUrlUseCase: SessionUseCases.LoadUrlUseCase,
     private val getNewsUseCase: GetNewsUseCase,
     private val newsView: NewsView,
-    private val onNewsItemSelected: () -> Unit
+    private val onNewsItemSelected: () -> Unit,
+    private val loadIcon: (view: ImageView, url: String) -> Unit
 ) : NewsViewInteractor {
 
     fun start() {
@@ -36,4 +38,9 @@ class NewsInteractor(
     override fun onOpenInPrivateTab(item: NewsItem) {
         TODO("not implemented")
     }
+
+    override fun loadItemIcon(view: ImageView, url: String) {
+        this.loadIcon(view, url)
+    }
+
 }

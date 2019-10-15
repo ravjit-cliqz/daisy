@@ -1,5 +1,6 @@
 package com.cliqz.browser.freshtab
 
+import android.widget.ImageView
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.cliqz.browser.freshtab.data.Result.Success
 import com.cliqz.browser.freshtab.domain.GetNewsUseCase
@@ -14,14 +15,16 @@ class NewsFeature(
     private val scope: LifecycleCoroutineScope,
     loadUrlUseCase: SessionUseCases.LoadUrlUseCase,
     newsUseCase: GetNewsUseCase,
-    onNewsItemSelected: () -> Unit
+    onNewsItemSelected: () -> Unit,
+    loadIcon: (view: ImageView, url: String) -> Unit
 ) : LifecycleAwareFeature {
 
     private var interactor = NewsInteractor(
             loadUrlUseCase,
             newsUseCase,
             newsView,
-            onNewsItemSelected
+            onNewsItemSelected,
+            loadIcon
     )
 
     override fun start() {
