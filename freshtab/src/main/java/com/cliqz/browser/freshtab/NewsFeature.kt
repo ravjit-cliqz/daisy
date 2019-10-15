@@ -1,13 +1,13 @@
-package org.mozilla.reference.browser.freshtab
+package com.cliqz.browser.freshtab
 
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.cliqz.browser.freshtab.data.Result.Success
+import com.cliqz.browser.freshtab.domain.GetNewsUseCase
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.support.base.feature.LifecycleAwareFeature
-import org.mozilla.reference.browser.freshtab.data.Result.Success
-import org.mozilla.reference.browser.freshtab.domain.GetNewsUseCase
 
 class NewsFeature(
     private val newsView: NewsView,

@@ -34,14 +34,14 @@
         mozac:awesomeBarChipTextColor="#ffffff"
         mozac:awesomeBarChipBackgroundColor="#444444" />
 
-    <org.mozilla.reference.browser.freshtab.FreshTab
+    <com.cliqz.browser.freshtab.FreshTab
         android:id="@+id/freshTab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="56dp"
         android:visibility="gone">
 
-        <org.mozilla.reference.browser.freshtab.NewsView
+        <com.cliqz.browser.freshtab.NewsView
             android:id="@+id/newsView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:elevation="3dp"
             android:orientation="vertical" />
 
-    </org.mozilla.reference.browser.freshtab.FreshTab>
+    </com.cliqz.browser.freshtab.FreshTab>
 
     <mozilla.components.feature.findinpage.view.FindInPageBar
         android:id="@+id/findInPageBar"

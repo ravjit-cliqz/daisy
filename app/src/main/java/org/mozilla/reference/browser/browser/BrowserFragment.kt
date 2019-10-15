@@ -7,6 +7,8 @@ package org.mozilla.reference.browser.browser
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import com.cliqz.browser.freshtab.FreshTabFeature
+import com.cliqz.browser.freshtab.NewsFeature
 import kotlinx.android.synthetic.main.fragment_browser.*
 import kotlinx.android.synthetic.main.fragment_browser.view.*
 import mozilla.components.feature.awesomebar.AwesomeBarFeature
@@ -17,8 +19,6 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import org.mozilla.reference.browser.R
 import org.mozilla.reference.browser.UserInteractionHandler
 import org.mozilla.reference.browser.ext.requireComponents
-import org.mozilla.reference.browser.freshtab.FreshTabFeature
-import org.mozilla.reference.browser.freshtab.NewsFeature
 import org.mozilla.reference.browser.tabs.TabsTrayFragment
 
 /**

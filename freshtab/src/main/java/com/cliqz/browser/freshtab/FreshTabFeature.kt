@@ -1,4 +1,4 @@
-package org.mozilla.reference.browser.freshtab
+package com.cliqz.browser.freshtab
 
 import android.view.View
 import mozilla.components.browser.session.Session

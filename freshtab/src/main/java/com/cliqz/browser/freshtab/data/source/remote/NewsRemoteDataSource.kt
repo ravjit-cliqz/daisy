@@ -1,5 +1,12 @@
-package org.mozilla.reference.browser.freshtab.data.source.remote
+package com.cliqz.browser.freshtab.data.source.remote
 
+import com.cliqz.browser.freshtab.data.NewsItem
+import com.cliqz.browser.freshtab.data.Result
+import com.cliqz.browser.freshtab.data.Result.Error
+import com.cliqz.browser.freshtab.data.Result.Success
+import com.cliqz.browser.freshtab.data.source.NewsDataSource
+import java.io.IOException
+import java.util.Locale
 import mozilla.components.concept.fetch.Client
 import mozilla.components.concept.fetch.Headers
 import mozilla.components.concept.fetch.isSuccess
@@ -9,14 +16,6 @@ import mozilla.components.concept.fetch.Response
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
-import org.mozilla.reference.browser.freshtab.data.NewsItem
-import org.mozilla.reference.browser.freshtab.data.Result
-import org.mozilla.reference.browser.freshtab.data.Result.Error
-import org.mozilla.reference.browser.freshtab.data.Result.Success
-import org.mozilla.reference.browser.freshtab.data.source.NewsDataSource
-import java.io.IOException
-import java.util.Locale
-import kotlin.collections.ArrayList
 
 class NewsRemoteDataSource(private val client: Client) : NewsDataSource {
 

@@ -177,6 +177,8 @@ if (project.hasProperty("telemetry") && project.property("telemetry") == "true")
 }
 
 dependencies {
+    implementation project(':freshtab')
+
     implementation Deps.mozilla_concept_engine
     implementation Deps.mozilla_concept_tabstray
     implementation Deps.mozilla_concept_toolbar

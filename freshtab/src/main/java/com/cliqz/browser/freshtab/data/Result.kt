@@ -1,7 +1,7 @@
-package org.mozilla.reference.browser.freshtab.data
+package com.cliqz.browser.freshtab.data
 
+import com.cliqz.browser.freshtab.data.Result.Success
 import java.lang.Exception
-import org.mozilla.reference.browser.freshtab.data.Result.Success
 
 /**
  * A generic class that holds data and its loading state

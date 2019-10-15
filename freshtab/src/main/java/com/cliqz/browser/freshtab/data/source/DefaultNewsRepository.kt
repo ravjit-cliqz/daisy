@@ -1,9 +1,9 @@
-package org.mozilla.reference.browser.freshtab.data.source
+package com.cliqz.browser.freshtab.data.source
 
-import org.mozilla.reference.browser.freshtab.data.NewsItem
-import org.mozilla.reference.browser.freshtab.data.Result
-import org.mozilla.reference.browser.freshtab.data.Result.Success
-import org.mozilla.reference.browser.freshtab.data.source.remote.NewsRemoteDataSource
+import com.cliqz.browser.freshtab.data.NewsItem
+import com.cliqz.browser.freshtab.data.Result
+import com.cliqz.browser.freshtab.data.Result.Success
+import com.cliqz.browser.freshtab.data.source.remote.NewsRemoteDataSource
 
 class DefaultNewsRepository(private val newsRemoteDataSource: NewsRemoteDataSource) : NewsRepository {
 

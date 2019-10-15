@@ -1,9 +1,9 @@
-package org.mozilla.reference.browser.freshtab
+package com.cliqz.browser.freshtab
 
+import com.cliqz.browser.freshtab.data.NewsItem
+import com.cliqz.browser.freshtab.data.Result
+import com.cliqz.browser.freshtab.domain.GetNewsUseCase
 import mozilla.components.feature.session.SessionUseCases
-import org.mozilla.reference.browser.freshtab.data.NewsItem
-import org.mozilla.reference.browser.freshtab.data.Result
-import org.mozilla.reference.browser.freshtab.domain.GetNewsUseCase
 
 class NewsInteractor(
     private val loadUrlUseCase: SessionUseCases.LoadUrlUseCase,

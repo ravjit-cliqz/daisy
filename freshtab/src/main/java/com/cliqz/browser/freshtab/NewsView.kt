@@ -1,4 +1,4 @@
-package org.mozilla.reference.browser.freshtab
+package com.cliqz.browser.freshtab
 
 import android.content.Context
 import android.graphics.Color
@@ -11,9 +11,8 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import org.mozilla.reference.browser.R
-import org.mozilla.reference.browser.freshtab.data.NewsItem
-import org.mozilla.reference.browser.freshtab.data.Result
+import com.cliqz.browser.freshtab.data.NewsItem
+import com.cliqz.browser.freshtab.data.Result
 
 class NewsView @JvmOverloads constructor(
     context: Context,
