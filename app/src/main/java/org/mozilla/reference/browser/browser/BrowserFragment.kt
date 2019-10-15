@@ -6,13 +6,10 @@ package org.mozilla.reference.browser.browser
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
 import com.cliqz.browser.freshtab.FreshTabFeature
-import com.cliqz.browser.freshtab.NewsFeature
 import kotlinx.android.synthetic.main.fragment_browser.*
 import kotlinx.android.synthetic.main.fragment_browser.view.*
-import mozilla.components.browser.icons.IconRequest
 import mozilla.components.feature.awesomebar.AwesomeBarFeature
 import mozilla.components.feature.session.ThumbnailsFeature
 import mozilla.components.feature.tabs.toolbar.TabsToolbarFeature
@@ -29,7 +26,7 @@ import org.mozilla.reference.browser.tabs.TabsTrayFragment
 class BrowserFragment : BaseBrowserFragment(), BackHandler, UserInteractionHandler {
     private val thumbnailsFeature = ViewBoundFeatureWrapper<ThumbnailsFeature>()
     private val readerViewFeature = ViewBoundFeatureWrapper<ReaderViewIntegration>()
-    private val newsFeature = ViewBoundFeatureWrapper<NewsFeature>()
+    private val newsViewIntegration = ViewBoundFeatureWrapper<NewsViewIntegration>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,21 +45,22 @@ class BrowserFragment : BaseBrowserFragment(), BackHandler, UserInteractionHandl
                 requireComponents.useCases.sessionUseCases.loadUrl)
             .addClipboardProvider(requireContext(), requireComponents.useCases.sessionUseCases.loadUrl)
 
-        // TODO: Not sure if these features be wrapped in ViewBoundFeatureWrapper
         FreshTabFeature(toolbar, freshTab, engineView,
                 requireComponents.core.sessionManager.selectedSession)
 
-        newsFeature.set(
-                feature = NewsFeature(
-                    newsView,
-                    lifecycleScope,
-                    requireComponents.useCases.sessionUseCases.loadUrl,
-                    requireComponents.useCases.getNewsUseCase,
-                    ::onNewsItemSelected,
-                    ::loadNewsIcons
-                ),
-                owner = this,
-                view = view)
+        newsViewIntegration.set(
+            feature = NewsViewIntegration(
+                newsView,
+                freshTab,
+                engineView,
+                lifecycleScope,
+                requireComponents.useCases.sessionUseCases.loadUrl,
+                requireComponents.useCases.getNewsUseCase,
+                requireComponents.core.icons
+            ),
+            owner = this,
+            view = view
+        )
 
         TabsToolbarFeature(
             toolbar = toolbar,
@@ -90,15 +88,6 @@ class BrowserFragment : BaseBrowserFragment(), BackHandler, UserInteractionHandl
             owner = this,
             view = view
         )
-    }
-
-    private fun onNewsItemSelected() {
-        freshTab.visibility = View.GONE
-        engineView.asView().visibility = View.VISIBLE
-    }
-
-    private fun loadNewsIcons(view: ImageView, url: String) {
-        requireComponents.core.icons.loadIntoView(view, IconRequest(url))
     }
 
     private fun showTabs() {

@@ -31,6 +31,6 @@ class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInterac
 
     fun bind(newsItem: NewsItem) {
         this.newsItem = newsItem
-        interactor.loadItemIcon(iconView, newsItem.url)
+        interactor.loadNewsItemIcon(iconView, newsItem.url)
     }
 }

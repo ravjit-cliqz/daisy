@@ -52,10 +52,10 @@ class NewsView @JvmOverloads constructor(
 
     private fun buildTitleSpannable(newsItem: NewsItem): CharSequence {
         val builder = SpannableStringBuilder()
-        if (newsItem.breaking && newsItem.breakingLabel != null && !newsItem.breakingLabel.isEmpty()) {
+        if (newsItem.breaking && !newsItem.breakingLabel.isNullOrBlank()) {
             appendLabel(builder, newsItem.breakingLabel.toUpperCase(), Color.RED)
         }
-        if (newsItem.isLocalNews && newsItem.localLabel != null && !newsItem.localLabel.isEmpty()) {
+        if (newsItem.isLocalNews && !newsItem.localLabel.isNullOrBlank()) {
             // TODO: Change Color
             @ColorInt val color = ContextCompat.getColor(context, R.color.textColorPrimary)
             appendLabel(builder, newsItem.localLabel.toUpperCase(), color)
@@ -82,5 +82,5 @@ interface NewsViewInteractor {
 
     fun onOpenInPrivateTab(item: NewsItem)
 
-    fun loadItemIcon(view: ImageView, url: String)
+    fun loadNewsItemIcon(view: ImageView, url: String)
 }

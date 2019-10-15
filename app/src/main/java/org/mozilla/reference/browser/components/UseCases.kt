@@ -20,8 +20,6 @@ import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.feature.session.SettingsUseCases
 import mozilla.components.feature.tabs.TabsUseCases
 import org.mozilla.reference.browser.history.usecases.HistoryUseCases
-import org.mozilla.reference.browser.freshtab.domain.GetNewsUseCase
-import org.mozilla.reference.browser.freshtab.data.source.NewsRepository
 
 /**
  * Component group for all use cases. Use cases are provided by feature

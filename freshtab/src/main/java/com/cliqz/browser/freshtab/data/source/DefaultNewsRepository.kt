@@ -5,20 +5,22 @@ import com.cliqz.browser.freshtab.data.Result
 import com.cliqz.browser.freshtab.data.Result.Success
 import com.cliqz.browser.freshtab.data.source.remote.NewsRemoteDataSource
 
-class DefaultNewsRepository(private val newsRemoteDataSource: NewsRemoteDataSource) : NewsRepository {
+class DefaultNewsRepository(
+    private val newsRemoteDataSource: NewsRemoteDataSource
+) : NewsRepository {
 
-    private var cachedNews: MutableList<NewsItem>? = null
+    private var cachedNews: List<NewsItem> = emptyList()
 
     override suspend fun getNews(forceUpdate: Boolean): Result<List<NewsItem>> {
         // TODO: Logic to do force update after some time interval
 
         // Return with cache if available
-        if (cachedNews != null) {
-            return Success(cachedNews as List<NewsItem>)
+        if (cachedNews.isNotEmpty()) {
+            return Success(cachedNews)
         }
         val news = fetchNewsFromRemoteOrLocal()
         cacheNews((news as Success).data)
-        return Success(cachedNews as List<NewsItem>)
+        return Success(cachedNews)
     }
 
     private suspend fun fetchNewsFromRemoteOrLocal(): Result<List<NewsItem>> {
@@ -28,7 +30,7 @@ class DefaultNewsRepository(private val newsRemoteDataSource: NewsRemoteDataSour
     }
 
     private fun cacheNews(newsList: List<NewsItem>) {
-        cachedNews = newsList.toMutableList()
+        cachedNews = newsList
     }
 
     companion object {
@@ -37,10 +39,8 @@ class DefaultNewsRepository(private val newsRemoteDataSource: NewsRemoteDataSour
         private var instance: NewsRepository? = null
 
         fun getInstance(newsRemoteDataSource: NewsRemoteDataSource) =
-                instance
-                        ?: synchronized(this) {
-                    instance
-                            ?: DefaultNewsRepository(newsRemoteDataSource).also { instance = it }
-                }
+            instance ?: synchronized(this) {
+                instance ?: DefaultNewsRepository(newsRemoteDataSource).also { instance = it }
+            }
     }
 }

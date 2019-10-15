@@ -5,7 +5,11 @@
 // Synchronized version numbers for dependencies used by (some) modules
 private object Versions {
     const val kotlin = "1.3.30"
-    const val coroutines = "1.0.1"
+    const val coroutines = "1.3.2"
+
+    const val junit = "4.12"
+    const val mockk = "1.9.3"
+    const val androidx_test_ext = "1.1.1"
 
     const val androidx_appcompat = "1.0.2"
     const val androidx_constraintlayout = "1.1.3"
@@ -34,6 +38,12 @@ private object Versions {
 object Deps {
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+    const val kotlin_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+    const val kotlin_coroutines_test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
+
+    const val testing_junit = "junit:junit:${Versions.junit}"
+    const val testing_mockk = "io.mockk:mockk:${Versions.mockk}"
+    const val androidx_test_junit = "androidx.test.ext:junit:${Versions.androidx_test_ext}"
 
     const val mozilla_concept_engine = "org.mozilla.components:concept-engine:${Versions.mozilla_android_components}"
     const val mozilla_concept_tabstray = "org.mozilla.components:concept-tabstray:${Versions.mozilla_android_components}"

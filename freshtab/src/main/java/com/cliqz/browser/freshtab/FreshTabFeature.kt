@@ -9,7 +9,7 @@ class FreshTabFeature(
     toolbar: Toolbar,
     private val freshTab: FreshTab,
     private val engineView: EngineView,
-    private val selectedSession: Session?
+    private val selectedSession: Session? = null
 ) {
     init {
         showFreshTab()

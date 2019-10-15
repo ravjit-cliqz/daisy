@@ -40,7 +40,10 @@ dependencies {
     implementation Deps.androidx_lifecycle_runtime
     implementation Deps.google_material
 
-    // testImplementation 'junit:junit:4.12'
+    testImplementation Deps.testing_junit
+    testImplementation Deps.testing_mockk
+    testImplementation Deps.kotlin_coroutines_test
+    testImplementation Deps.androidx_test_junit
 
     androidTestImplementation Deps.tools_test_runner
     androidTestImplementation Deps.espresso_core, {
