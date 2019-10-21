@@ -21,6 +21,43 @@ class FreshTab @JvmOverloads constructor(
     }
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
-        view.addView(child, params)
+        if (this.childCount > 0) {
+            view.addView(child, params)
+        } else {
+            super.addView(child)
+        }
     }
+
+    override fun addView(child: View?) {
+        if (this.childCount > 0) {
+            view.addView(view)
+        } else {
+            super.addView(child)
+        }
+    }
+
+    override fun addView(child: View?, width: Int, height: Int) {
+        if (this.childCount > 0) {
+            view.addView(view, width, height)
+        } else {
+            super.addView(child)
+        }
+    }
+
+    override fun addView(child: View?, index: Int) {
+        if (this.childCount > 0) {
+            view.addView(view, index)
+        } else {
+            super.addView(child, index)
+        }
+    }
+
+    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
+        if (this.childCount > 0) {
+            view.addView(view, index, params)
+        } else {
+            super.addView(child, index, params)
+        }
+    }
+
 }
