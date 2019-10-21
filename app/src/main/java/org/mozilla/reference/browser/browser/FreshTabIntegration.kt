@@ -1,5 +1,6 @@
 package org.mozilla.reference.browser.browser
 
+import android.content.Context
 import android.widget.ImageView
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.cliqz.browser.freshtab.FreshTab
@@ -38,6 +39,7 @@ class FreshTabIntegration(
     }
 
     fun addNewsFeature(
+        context: Context,
         newsView: NewsView,
         lifecycleScope: LifecycleCoroutineScope,
         loadUrl: SessionUseCases.DefaultLoadUrlUseCase,
@@ -45,6 +47,7 @@ class FreshTabIntegration(
         icons: BrowserIcons
     ): FreshTabIntegration {
         feature = NewsFeature(
+            context,
             newsView,
             lifecycleScope,
             loadUrl,

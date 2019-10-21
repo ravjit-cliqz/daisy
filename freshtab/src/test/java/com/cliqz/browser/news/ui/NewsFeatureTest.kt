@@ -23,7 +23,7 @@ class NewsFeatureTest {
 
     @Before
     fun setup() {
-        feature = NewsFeature(newsView, coroutineScope, mockk(), mockk())
+        feature = NewsFeature(mockk(), newsView, coroutineScope, mockk(), mockk())
         feature.presenter = presenter
     }
 
@@ -54,6 +54,6 @@ class NewsFeatureTest {
         val emptyResult: Success<List<NewsItem>> = Success(listOf())
         coEvery { presenter.getNews() } returns emptyResult
         feature.start()
-        verify { newsView.displayNews(emptyResult.data) }
+        verify { newsView.displayNews(emptyResult.data, any()) }
     }
 }

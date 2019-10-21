@@ -1,5 +1,6 @@
 package com.cliqz.browser.news.ui
 
+import android.content.Context
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
 import com.cliqz.browser.news.data.Result.Success
@@ -12,6 +13,7 @@ import mozilla.components.feature.session.SessionUseCases.LoadUrlUseCase
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 
 class NewsFeature(
+    context: Context,
     private val newsView: NewsView,
     private val scope: CoroutineScope,
     loadUrlUseCase: LoadUrlUseCase,
@@ -22,6 +24,7 @@ class NewsFeature(
 
     @VisibleForTesting
     internal var presenter = NewsPresenter(
+        context,
         newsView,
         loadUrlUseCase,
         newsUseCase,
@@ -35,7 +38,7 @@ class NewsFeature(
         scope.launch {
             result.await().run {
                 if (this is Success) {
-                    newsView.displayNews(data)
+                    newsView.displayNews(data, presenter.isNewsViewExpanded)
                 } else {
                     newsView.hideNews()
                 }
