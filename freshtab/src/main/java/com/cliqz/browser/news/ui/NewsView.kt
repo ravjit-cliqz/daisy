@@ -73,7 +73,7 @@ class NewsView @JvmOverloads constructor(
     }
 }
 
-public interface Presenter {
+interface Presenter {
 
     suspend fun getNews(): Result<List<NewsItem>>
 

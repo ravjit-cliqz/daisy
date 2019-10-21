@@ -71,5 +71,4 @@ class UseCases(
     val historyUseCases by lazy { HistoryUseCases(historyStorage) }
 
     val getNewsUseCase: GetNewsUseCase by lazy { GetNewsUseCase(newsRepository) }
-
 }
