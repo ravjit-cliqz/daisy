@@ -1,9 +1,9 @@
-package com.cliqz.browser.freshtab.domain
+package com.cliqz.browser.news.domain
 
-import com.cliqz.browser.freshtab.data.NewsItem
-import com.cliqz.browser.freshtab.data.Result.Error
-import com.cliqz.browser.freshtab.data.Result.Success
-import com.cliqz.browser.freshtab.data.source.NewsRepository
+import com.cliqz.browser.news.data.NewsItem
+import com.cliqz.browser.news.data.Result.Error
+import com.cliqz.browser.news.data.Result.Success
+import com.cliqz.browser.news.data.source.NewsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

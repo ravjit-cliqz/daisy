@@ -1,8 +1,8 @@
-package com.cliqz.browser.freshtab.data.source
+package com.cliqz.browser.news.data.source
 
-import com.cliqz.browser.freshtab.data.NewsItem
-import com.cliqz.browser.freshtab.data.Result.Success
-import com.cliqz.browser.freshtab.data.source.remote.NewsRemoteDataSource
+import com.cliqz.browser.news.data.NewsItem
+import com.cliqz.browser.news.data.Result.Success
+import com.cliqz.browser.news.data.source.remote.NewsRemoteDataSource
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

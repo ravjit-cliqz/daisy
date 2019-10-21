@@ -5,8 +5,8 @@
 package org.mozilla.reference.browser.components
 
 import android.content.Context
-import com.cliqz.browser.freshtab.domain.GetNewsUseCase
-import com.cliqz.browser.freshtab.data.source.NewsRepository
+import com.cliqz.browser.news.domain.GetNewsUseCase
+import com.cliqz.browser.news.data.source.NewsRepository
 import mozilla.components.browser.search.SearchEngineManager
 import mozilla.components.browser.session.SessionManager
 import mozilla.components.browser.state.store.BrowserStore

@@ -1,7 +1,7 @@
-package com.cliqz.browser.freshtab
+package com.cliqz.browser.news.ui
 
-import com.cliqz.browser.freshtab.data.NewsItem
-import com.cliqz.browser.freshtab.data.Result.Success
+import com.cliqz.browser.news.data.NewsItem
+import com.cliqz.browser.news.data.Result.Success
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -15,7 +15,7 @@ import org.junit.Test
 class NewsFeatureTest {
 
     private val newsView: NewsView = mockk(relaxed = true)
-    private val interactor: NewsInteractor = mockk(relaxed = true)
+    private val presenter: NewsPresenter = mockk(relaxed = true)
 
     private val coroutineScope = TestCoroutineScope()
 
@@ -24,7 +24,7 @@ class NewsFeatureTest {
     @Before
     fun setup() {
         feature = NewsFeature(newsView, coroutineScope, mockk(), mockk())
-        feature.interactor = interactor
+        feature.presenter = presenter
     }
 
     @After
@@ -38,21 +38,21 @@ class NewsFeatureTest {
     @Test
     fun `Start is forwarded to interactor`() {
         val emptyResult: Success<List<NewsItem>> = Success(listOf())
-        coEvery { interactor.getNews() } returns emptyResult
+        coEvery { presenter.getNews() } returns emptyResult
         feature.start()
-        verify { interactor.start() }
+        verify { presenter.start() }
     }
 
     @Test
     fun `Stop is forwarded to interactor`() {
         feature.stop()
-        verify { interactor.stop() }
+        verify { presenter.stop() }
     }
 
     @Test
     fun `Data is forwarded to view through interactor`() {
         val emptyResult: Success<List<NewsItem>> = Success(listOf())
-        coEvery { interactor.getNews() } returns emptyResult
+        coEvery { presenter.getNews() } returns emptyResult
         feature.start()
         verify { newsView.displayNews(emptyResult.data) }
     }

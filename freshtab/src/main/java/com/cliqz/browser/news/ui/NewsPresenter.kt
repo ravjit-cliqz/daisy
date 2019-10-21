@@ -1,25 +1,25 @@
-package com.cliqz.browser.freshtab
+package com.cliqz.browser.news.ui
 
 import android.widget.ImageView
-import com.cliqz.browser.freshtab.data.NewsItem
-import com.cliqz.browser.freshtab.data.Result
-import com.cliqz.browser.freshtab.domain.GetNewsUseCase
+import com.cliqz.browser.news.data.NewsItem
+import com.cliqz.browser.news.data.Result
+import com.cliqz.browser.news.domain.GetNewsUseCase
 import mozilla.components.feature.session.SessionUseCases.LoadUrlUseCase
 
-class NewsInteractor(
+class NewsPresenter(
     private val newsView: NewsView,
     private val loadUrlUseCase: LoadUrlUseCase,
     private val getNewsUseCase: GetNewsUseCase,
     private val onNewsItemSelected: (() -> Unit)? = null,
     private val loadNewsItemIcon: ((view: ImageView, url: String) -> Unit)? = null
-) : NewsViewInteractor {
+) : Presenter {
 
     fun start() {
-        newsView.interactor = this
+        newsView.presenter = this
     }
 
     fun stop() {
-        newsView.interactor = null
+        newsView.presenter = null
     }
 
     override suspend fun getNews(): Result<List<NewsItem>> {

@@ -1,7 +1,7 @@
 package org.mozilla.reference.browser.components
 
-import com.cliqz.browser.freshtab.data.source.DefaultNewsRepository
-import com.cliqz.browser.freshtab.data.source.remote.NewsRemoteDataSource
+import com.cliqz.browser.news.data.source.DefaultNewsRepository
+import com.cliqz.browser.news.data.source.remote.NewsRemoteDataSource
 import mozilla.components.concept.fetch.Client
 
 class News(private val client: Client) {

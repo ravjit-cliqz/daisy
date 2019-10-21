@@ -1,6 +1,6 @@
-package com.cliqz.browser.freshtab.data
+package com.cliqz.browser.news.data
 
-import com.cliqz.browser.freshtab.data.Result.Success
+import com.cliqz.browser.news.data.Result.Success
 import java.lang.Exception
 
 /**

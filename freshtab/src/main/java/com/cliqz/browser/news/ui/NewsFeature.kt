@@ -1,9 +1,9 @@
-package com.cliqz.browser.freshtab
+package com.cliqz.browser.news.ui
 
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
-import com.cliqz.browser.freshtab.data.Result.Success
-import com.cliqz.browser.freshtab.domain.GetNewsUseCase
+import com.cliqz.browser.news.data.Result.Success
+import com.cliqz.browser.news.domain.GetNewsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -21,7 +21,7 @@ class NewsFeature(
 ) : LifecycleAwareFeature {
 
     @VisibleForTesting
-    internal var interactor = NewsInteractor(
+    internal var presenter = NewsPresenter(
         newsView,
         loadUrlUseCase,
         newsUseCase,
@@ -30,8 +30,8 @@ class NewsFeature(
     )
 
     override fun start() {
-        interactor.start()
-        val result = scope.async(Dispatchers.IO) { interactor.getNews() }
+        presenter.start()
+        val result = scope.async(Dispatchers.IO) { presenter.getNews() }
         scope.launch {
             result.await().run {
                 if (this is Success) {
@@ -44,6 +44,6 @@ class NewsFeature(
     }
 
     override fun stop() {
-        interactor.stop()
+        presenter.stop()
     }
 }

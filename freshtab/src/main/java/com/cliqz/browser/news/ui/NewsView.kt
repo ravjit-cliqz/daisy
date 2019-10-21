@@ -1,4 +1,4 @@
-package com.cliqz.browser.freshtab
+package com.cliqz.browser.news.ui
 
 import android.content.Context
 import android.graphics.Color
@@ -12,8 +12,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import com.cliqz.browser.freshtab.data.NewsItem
-import com.cliqz.browser.freshtab.data.Result
+import com.cliqz.browser.freshtab.R
+import com.cliqz.browser.news.data.NewsItem
+import com.cliqz.browser.news.data.Result
 
 class NewsView @JvmOverloads constructor(
     context: Context,
@@ -26,7 +27,7 @@ class NewsView @JvmOverloads constructor(
 
     var topNewsListView = view.findViewById<LinearLayout>(R.id.topnews_list)
 
-    var interactor: NewsViewInteractor? = null
+    var presenter: Presenter? = null
 
     fun displayNews(newsList: List<NewsItem>) {
         if (newsList.isNullOrEmpty()) {
@@ -36,7 +37,7 @@ class NewsView @JvmOverloads constructor(
         val inflater = LayoutInflater.from(context)
         for (newsItem in newsList) {
             val view = inflater.inflate(R.layout.news_item_layout, topNewsListView, false)
-            interactor?.let {
+            presenter?.let {
                 val holder = NewsItemViewHolder(view, it)
                 holder.bind(newsItem)
                 holder.titleView.text = buildTitleSpannable(newsItem)
@@ -72,7 +73,7 @@ class NewsView @JvmOverloads constructor(
     }
 }
 
-interface NewsViewInteractor {
+public interface Presenter {
 
     suspend fun getNews(): Result<List<NewsItem>>
 

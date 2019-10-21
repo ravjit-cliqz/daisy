@@ -4,9 +4,9 @@ import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.cliqz.browser.freshtab.FreshTab
-import com.cliqz.browser.freshtab.NewsFeature
-import com.cliqz.browser.freshtab.NewsView
-import com.cliqz.browser.freshtab.domain.GetNewsUseCase
+import com.cliqz.browser.news.ui.NewsFeature
+import com.cliqz.browser.news.ui.NewsView
+import com.cliqz.browser.news.domain.GetNewsUseCase
 import kotlinx.coroutines.cancel
 import mozilla.components.browser.icons.BrowserIcons
 import mozilla.components.browser.icons.IconRequest

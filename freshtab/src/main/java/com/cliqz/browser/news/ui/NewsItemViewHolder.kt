@@ -1,12 +1,13 @@
-package com.cliqz.browser.freshtab
+package com.cliqz.browser.news.ui
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.cliqz.browser.freshtab.data.NewsItem
+import com.cliqz.browser.freshtab.R
+import com.cliqz.browser.news.data.NewsItem
 
-class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInteractor)
+class NewsItemViewHolder(itemView: View, private val presenter: Presenter)
     : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
     override fun onLongClick(v: View?): Boolean {
@@ -14,7 +15,7 @@ class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInterac
     }
 
     override fun onClick(v: View?) {
-        newsItem?.let { interactor.onOpenInNormalTab(it) }
+        newsItem?.let { presenter.onOpenInNormalTab(it) }
     }
 
     private val iconView: ImageView = itemView.findViewById(R.id.icon_view)
@@ -31,6 +32,6 @@ class NewsItemViewHolder(itemView: View, private val interactor: NewsViewInterac
 
     fun bind(newsItem: NewsItem) {
         this.newsItem = newsItem
-        interactor.loadNewsItemIcon(iconView, newsItem.url)
+        presenter.loadNewsItemIcon(iconView, newsItem.url)
     }
 }

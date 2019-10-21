@@ -1,4 +1,4 @@
-package com.cliqz.browser.freshtab.data
+package com.cliqz.browser.news.data
 
 data class NewsItem(
     val url: String,

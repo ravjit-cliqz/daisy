@@ -1,10 +1,10 @@
-package com.cliqz.browser.freshtab.data.source.remote
+package com.cliqz.browser.news.data.source.remote
 
-import com.cliqz.browser.freshtab.data.NewsItem
-import com.cliqz.browser.freshtab.data.Result
-import com.cliqz.browser.freshtab.data.Result.Error
-import com.cliqz.browser.freshtab.data.Result.Success
-import com.cliqz.browser.freshtab.data.source.NewsDataSource
+import com.cliqz.browser.news.data.NewsItem
+import com.cliqz.browser.news.data.Result
+import com.cliqz.browser.news.data.Result.Error
+import com.cliqz.browser.news.data.Result.Success
+import com.cliqz.browser.news.data.source.NewsDataSource
 import java.io.IOException
 import java.util.Locale
 import mozilla.components.concept.fetch.Client
@@ -25,10 +25,10 @@ class NewsRemoteDataSource(private val client: Client) : NewsDataSource {
                 Headers.Names.CONTENT_TYPE to CONTENT_TYPE_JSON
         )
         val request = Request(
-                url = url,
-                method = Request.Method.PUT,
-                headers = headers,
-                body = Request.Body.fromString(NEWS_PAYLOAD)
+            url = url,
+            method = Request.Method.PUT,
+            headers = headers,
+            body = Request.Body.fromString(NEWS_PAYLOAD)
         )
 
         try {
