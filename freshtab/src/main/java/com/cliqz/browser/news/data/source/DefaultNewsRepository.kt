@@ -11,11 +11,11 @@ class DefaultNewsRepository(
 
     private var cachedNews: List<NewsItem> = emptyList()
 
-    override suspend fun getNews(forceUpdate: Boolean): Result<List<NewsItem>> {
-        // TODO: Logic to do force update after some time interval
+    private var lastCachedOn = 0L
 
+    override suspend fun getNews(): Result<List<NewsItem>> {
         // Return with cache if available
-        if (cachedNews.isNotEmpty()) {
+        if (cachedNews.isNotEmpty() && !hasCacheExpired()) {
             return Success(cachedNews)
         }
         val newsList = fetchNewsFromRemoteOrLocal()
@@ -31,9 +31,16 @@ class DefaultNewsRepository(
 
     private fun cacheNews(newsList: List<NewsItem>) {
         cachedNews = newsList
+        lastCachedOn = System.currentTimeMillis()
+    }
+
+    fun hasCacheExpired(): Boolean {
+        return lastCachedOn != 0L && (System.currentTimeMillis() - lastCachedOn) > CACHE_PERIOD
     }
 
     companion object {
+        const val CACHE_PERIOD = 30 * 60 * 1000L // 30 minutes
+
         // For singleton instantiation
         @Volatile
         private var instance: NewsRepository? = null
