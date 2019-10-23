@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/three_line_list_item_height"
-    android:background="@color/fresh_tab_news_background_color"
     android:clipToPadding="false"
     android:padding="@dimen/margin_padding_size_medium">
 
@@ -24,7 +23,7 @@
         android:layout_marginStart="@dimen/margin_padding_size_medium"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="?android:textColorPrimary"
+        tools:textColor="?android:textColorPrimary"
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon_view"
@@ -37,7 +36,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="?android:textColorSecondary"
+        tools:textColor="?android:textColorSecondary"
         android:textSize="@dimen/text_size_micro"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

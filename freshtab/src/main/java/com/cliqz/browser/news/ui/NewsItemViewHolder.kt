@@ -1,6 +1,5 @@
 package com.cliqz.browser.news.ui
 
-import android.content.Context
 import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -9,13 +8,16 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.cliqz.browser.freshtab.R
 import com.cliqz.browser.news.data.NewsItem
+import java.util.Locale
 
-class NewsItemViewHolder(itemView: View, private val presenter: Presenter)
-    : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+class NewsItemViewHolder(
+    itemView: View,
+    private val newsView: NewsView,
+    private val presenter: Presenter
+): RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
     override fun onLongClick(v: View?): Boolean {
         return true
@@ -25,11 +27,15 @@ class NewsItemViewHolder(itemView: View, private val presenter: Presenter)
         newsItem?.let { presenter.onOpenInNormalTab(it) }
     }
 
-    private val context: Context = itemView.context
     private val iconView: ImageView = itemView.findViewById(R.id.icon_view)
 
-    val urlView: TextView = itemView.findViewById(R.id.url_view)
-    val titleView: TextView = itemView.findViewById(R.id.title_view)
+    private val titleView: TextView = itemView.findViewById<TextView>(R.id.title_view).apply {
+        setTextColor(newsView.styling.titleTextColor)
+    }
+
+    private val urlView: TextView = itemView.findViewById<TextView>(R.id.url_view).apply {
+        setTextColor(newsView.styling.urlTextColor)
+    }
 
     private var newsItem: NewsItem? = null
 
@@ -48,12 +54,11 @@ class NewsItemViewHolder(itemView: View, private val presenter: Presenter)
     private fun buildTitleSpannable(newsItem: NewsItem): CharSequence {
         val builder = SpannableStringBuilder()
         if (newsItem.breaking && !newsItem.breakingLabel.isNullOrBlank()) {
-            appendLabel(builder, newsItem.breakingLabel.toUpperCase(), Color.RED)
+            appendLabel(builder, newsItem.breakingLabel.toUpperCase(Locale.getDefault()), Color.RED)
         }
         if (newsItem.isLocalNews && !newsItem.localLabel.isNullOrBlank()) {
-            // TODO: Change Color
-            @ColorInt val color = ContextCompat.getColor(context, R.color.textColorPrimary)
-            appendLabel(builder, newsItem.localLabel.toUpperCase(), color)
+            appendLabel(builder, newsItem.localLabel.toUpperCase(Locale.getDefault()),
+                    newsView.styling.titleTextColor)
         }
         builder.append(newsItem.title)
         return builder

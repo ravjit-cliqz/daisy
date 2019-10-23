@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import com.cliqz.browser.freshtab.R
 import com.cliqz.browser.news.data.NewsItem
 import com.cliqz.browser.news.data.Result
@@ -26,14 +27,37 @@ class NewsView @JvmOverloads constructor(
     private val collapseNewsIcon = AppCompatResources.getDrawable(context, R.drawable.ic_action_collapse)
     private val newsItemHeight = resources.getDimensionPixelSize(R.dimen.three_line_list_item_height)
 
-    private val view = LayoutInflater.from(context).inflate(R.layout.news_layout, this, true)
+    private val view: View = LayoutInflater.from(context).inflate(R.layout.news_layout, this, true)
 
-    private val newsLabelView = view.findViewById<TextView>(R.id.news_label)
-    private val topNewsListView = view.findViewById<LinearLayout>(R.id.topnews_list)
+    private val newsLabelView: TextView
+
+    private val topNewsListView: LinearLayout
+
+    internal val styling: NewsViewStyling
 
     var presenter: Presenter? = null
 
     init {
+        context.obtainStyledAttributes(attrs, R.styleable.NewsView, defStyleAttr, 0). apply {
+            styling = NewsViewStyling(
+                getColor(R.styleable.NewsView_newsViewTitleTextColor,
+                    ContextCompat.getColor(context, R.color.newsview_default_title_text_color)),
+                getColor(R.styleable.NewsView_newsViewUrlTextColor,
+                    ContextCompat.getColor(context, R.color.newsview_default_url_text_color)),
+                getColor(R.styleable.NewsView_newsViewBackgroundColor,
+                    ContextCompat.getColor(context, R.color.newsview_default_background_color))
+            )
+            recycle()
+        }
+
+        newsLabelView = view.findViewById<TextView>(R.id.news_label).apply {
+            setTextColor(styling.titleTextColor)
+            setBackgroundColor(styling.backgroundColor)
+        }
+        topNewsListView = view.findViewById<LinearLayout>(R.id.topnews_list).apply {
+            setBackgroundColor(styling.backgroundColor)
+        }
+
         // For the animation when news item views are added to the container
         topNewsListView.layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
 
@@ -53,9 +77,9 @@ class NewsView @JvmOverloads constructor(
         topNewsListView.removeAllViews()
         val inflater = LayoutInflater.from(context)
         for (newsItem in newsList) {
-            val view = inflater.inflate(R.layout.three_line_list_item_layout, topNewsListView, false)
-            presenter?.let { NewsItemViewHolder(view, it).bind(newsItem) }
-            topNewsListView.addView(view)
+            val itemView = inflater.inflate(R.layout.three_line_list_item_layout, topNewsListView, false)
+            presenter?.let { NewsItemViewHolder(itemView, this, it).bind(newsItem) }
+            topNewsListView.addView(itemView)
         }
         toggleNewsLabelIcon()
         view.visibility = View.VISIBLE
@@ -130,6 +154,12 @@ class NewsView @JvmOverloads constructor(
         private const val COLLAPSED_NEWS_NO = 2
     }
 }
+
+internal data class NewsViewStyling(
+    val titleTextColor: Int,
+    val urlTextColor: Int,
+    val backgroundColor: Int
+)
 
 interface Presenter {
 

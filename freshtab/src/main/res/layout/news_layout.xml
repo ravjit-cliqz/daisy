@@ -9,7 +9,6 @@
         android:id="@+id/news_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/fresh_tab_news_background_color"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/margin_padding_size_medium"
         android:paddingLeft="@dimen/margin_padding_size_medium"
@@ -18,9 +17,9 @@
         android:paddingRight="@dimen/margin_padding_size_medium"
         android:paddingBottom="@dimen/margin_padding_size_small"
         android:text="@string/news_label"
-        android:textColor="@color/textColorPrimary"
         android:textSize="18sp"
-        tools:drawableRight="@drawable/ic_action_expand" />
+        tools:drawableRight="@drawable/ic_action_expand"
+        tools:textColor="?android:textColorPrimary" />
 
     <LinearLayout
         android:id="@+id/topnews_list"
