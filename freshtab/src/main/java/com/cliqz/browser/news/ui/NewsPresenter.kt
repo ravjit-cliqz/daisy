@@ -6,16 +6,21 @@ import android.widget.ImageView
 import com.cliqz.browser.news.data.NewsItem
 import com.cliqz.browser.news.data.Result
 import com.cliqz.browser.news.domain.GetNewsUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import mozilla.components.feature.session.SessionUseCases.LoadUrlUseCase
 
-class NewsPresenter(
+class DefaultNewsPresenter(
     private val context: Context,
     private val newsView: NewsView,
+    private val scope: CoroutineScope,
     private val loadUrlUseCase: LoadUrlUseCase,
     private val getNewsUseCase: GetNewsUseCase,
     private val onNewsItemSelected: (() -> Unit)? = null,
-    private val loadNewsItemIcon: ((view: ImageView, url: String) -> Unit)? = null
-) : Presenter {
+    override val loadNewsItemIcon: ((view: ImageView, url: String) -> Unit)? = null
+) : NewsPresenter {
 
     override var isNewsViewExpanded: Boolean
         get() = isNewsViewExpanded(context)
@@ -25,6 +30,16 @@ class NewsPresenter(
 
     fun start() {
         newsView.presenter = this
+        val result = scope.async(Dispatchers.IO) { getNews() }
+        scope.launch {
+            result.await().run {
+                if (this is Result.Success) {
+                    newsView.displayNews(data, isNewsViewExpanded)
+                } else {
+                    newsView.hideNews()
+                }
+            }
+        }
     }
 
     fun stop() {
@@ -35,21 +50,14 @@ class NewsPresenter(
         return getNewsUseCase.invoke()
     }
 
+    override fun toggleNewsViewClicked() {
+        isNewsViewExpanded = !isNewsViewExpanded
+        newsView.toggleNewsView(isNewsViewExpanded)
+    }
+
     override fun onOpenInNormalTab(item: NewsItem) {
         loadUrlUseCase.invoke(item.url)
         onNewsItemSelected?.invoke()
-    }
-
-    override fun onOpenInNewNormalTab(item: NewsItem) {
-        TODO("not implemented")
-    }
-
-    override fun onOpenInPrivateTab(item: NewsItem) {
-        TODO("not implemented")
-    }
-
-    override fun loadNewsItemIcon(view: ImageView, url: String) {
-        loadNewsItemIcon?.invoke(view, url)
     }
 
     private fun isNewsViewExpanded(context: Context): Boolean {
@@ -67,5 +75,26 @@ class NewsPresenter(
         internal const val PREFERENCE_NAME = "news_feature"
         internal const val PREF_NEWS_EXPANDED = "news_expanded"
     }
+}
 
+interface NewsPresenter {
+
+    var isNewsViewExpanded: Boolean
+
+    val loadNewsItemIcon: ((view: ImageView, url: String) -> Unit)?
+
+    suspend fun getNews(): Result<List<NewsItem>>
+
+    fun onOpenInNormalTab(item: NewsItem)
+
+    fun toggleNewsViewClicked()
+
+    interface View {
+
+        fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean)
+
+        fun hideNews()
+
+        fun toggleNewsView(isNewsViewExpanded: Boolean)
+    }
 }

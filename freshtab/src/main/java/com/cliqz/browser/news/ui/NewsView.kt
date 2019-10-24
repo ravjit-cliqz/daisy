@@ -7,21 +7,19 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.cliqz.browser.freshtab.R
 import com.cliqz.browser.news.data.NewsItem
-import com.cliqz.browser.news.data.Result
 import kotlin.math.pow
 
 class NewsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr), NewsPresenter.View {
 
     private val expandNewsIcon = AppCompatResources.getDrawable(context, R.drawable.ic_action_expand)
     private val collapseNewsIcon = AppCompatResources.getDrawable(context, R.drawable.ic_action_collapse)
@@ -35,9 +33,10 @@ class NewsView @JvmOverloads constructor(
 
     internal val styling: NewsViewStyling
 
-    var presenter: Presenter? = null
+    var presenter: NewsPresenter? = null
 
     init {
+        // region style view
         context.obtainStyledAttributes(attrs, R.styleable.NewsView, defStyleAttr, 0). apply {
             styling = NewsViewStyling(
                 getColor(R.styleable.NewsView_newsViewTitleTextColor,
@@ -57,46 +56,42 @@ class NewsView @JvmOverloads constructor(
         topNewsListView = view.findViewById<LinearLayout>(R.id.topnews_list).apply {
             setBackgroundColor(styling.backgroundColor)
         }
+        // endregion
 
         // For the animation when news item views are added to the container
         topNewsListView.layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
 
         newsLabelView.setOnClickListener {
+            // Disable this so that the toggle animation works fine
             topNewsListView.layoutTransition.disableTransitionType(LayoutTransition.APPEARING)
-            toggleNewsView()
-            toggleNewsLabelIcon()
+            presenter?.toggleNewsViewClicked()
         }
     }
 
-    fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean) {
+    override fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean) {
         view.visibility = View.GONE
         if (newsList.isNullOrEmpty()) {
             return
         }
-        showNewsWithoutToggleAnimation(isNewsViewExpanded, newsList.count())
+        setInitialViewHeight(isNewsViewExpanded, newsList.count())
         topNewsListView.removeAllViews()
         val inflater = LayoutInflater.from(context)
         for (newsItem in newsList) {
             val itemView = inflater.inflate(R.layout.three_line_list_item_layout, topNewsListView, false)
-            presenter?.let { NewsItemViewHolder(itemView, this, it).bind(newsItem) }
+            NewsItemViewHolder(itemView, this).bind(newsItem, presenter?.loadNewsItemIcon) {
+                presenter?.onOpenInNormalTab(it)
+            }
             topNewsListView.addView(itemView)
         }
-        toggleNewsLabelIcon()
+        toggleNewsLabelIcon(isNewsViewExpanded)
         view.visibility = View.VISIBLE
     }
 
-    fun hideNews() {
+    override fun hideNews() {
         view.visibility = View.GONE
     }
 
-    private fun showNewsWithoutToggleAnimation(isNewsViewExpanded: Boolean, count: Int) {
-        val collapsedHeight = newsItemHeight * COLLAPSED_NEWS_NO
-        val expandedHeight = newsItemHeight * count
-        val viewHeight = if (isNewsViewExpanded) expandedHeight else collapsedHeight
-        topNewsListView.setViewHeight(viewHeight)
-    }
-
-    private fun showNewsView(isNewsViewExpanded: Boolean) {
+    override fun toggleNewsView(isNewsViewExpanded: Boolean) {
         val count = topNewsListView.childCount
         val collapsedHeight = newsItemHeight * COLLAPSED_NEWS_NO
         val expandedHeight = newsItemHeight * count
@@ -105,13 +100,14 @@ class NewsView @JvmOverloads constructor(
         } else {
             getToggleAnimation(topNewsListView, expandedHeight, collapsedHeight, count).start()
         }
+        toggleNewsLabelIcon(isNewsViewExpanded)
     }
 
-    private fun toggleNewsView() {
-        presenter?.let {
-            it.isNewsViewExpanded = !it.isNewsViewExpanded
-            showNewsView(it.isNewsViewExpanded)
-        }
+    private fun setInitialViewHeight(isNewsViewExpanded: Boolean, count: Int) {
+        val collapsedHeight = newsItemHeight * COLLAPSED_NEWS_NO
+        val expandedHeight = newsItemHeight * count
+        val viewHeight = if (isNewsViewExpanded) expandedHeight else collapsedHeight
+        topNewsListView.setViewHeight(viewHeight)
     }
 
     private fun getToggleAnimation(
@@ -137,11 +133,9 @@ class NewsView @JvmOverloads constructor(
         return animator
     }
 
-    private fun toggleNewsLabelIcon() {
-        presenter?.let {
-            val newsLabelIcon = if (it.isNewsViewExpanded) collapseNewsIcon else expandNewsIcon
-            newsLabelView.setCompoundDrawablesWithIntrinsicBounds(null, null, newsLabelIcon, null)
-        }
+    private fun toggleNewsLabelIcon(isNewsViewExpanded: Boolean) {
+        val newsLabelIcon = if (isNewsViewExpanded) collapseNewsIcon else expandNewsIcon
+        newsLabelView.setCompoundDrawablesWithIntrinsicBounds(null, null, newsLabelIcon, null)
     }
 
     private fun View.setViewHeight(height: Int) {
@@ -160,18 +154,3 @@ internal data class NewsViewStyling(
     val urlTextColor: Int,
     val backgroundColor: Int
 )
-
-interface Presenter {
-
-    var isNewsViewExpanded: Boolean
-
-    suspend fun getNews(): Result<List<NewsItem>>
-
-    fun onOpenInNormalTab(item: NewsItem)
-
-    fun onOpenInNewNormalTab(item: NewsItem)
-
-    fun onOpenInPrivateTab(item: NewsItem)
-
-    fun loadNewsItemIcon(view: ImageView, url: String)
-}

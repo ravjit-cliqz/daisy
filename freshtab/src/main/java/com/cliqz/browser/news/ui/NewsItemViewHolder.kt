@@ -15,17 +15,8 @@ import java.util.Locale
 
 class NewsItemViewHolder(
     itemView: View,
-    private val newsView: NewsView,
-    private val presenter: Presenter
-): RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
-
-    override fun onLongClick(v: View?): Boolean {
-        return true
-    }
-
-    override fun onClick(v: View?) {
-        newsItem?.let { presenter.onOpenInNormalTab(it) }
-    }
+    private val newsView: NewsView
+): RecyclerView.ViewHolder(itemView) {
 
     private val iconView: ImageView = itemView.findViewById(R.id.icon_view)
 
@@ -39,16 +30,16 @@ class NewsItemViewHolder(
 
     private var newsItem: NewsItem? = null
 
-    init {
-        itemView.setOnClickListener(this)
-        itemView.setOnLongClickListener(this)
-    }
-
-    fun bind(newsItem: NewsItem) {
+    fun bind(
+        newsItem: NewsItem,
+        iconLoader: ((iconView: ImageView, iconUrl: String) -> Unit)?,
+        clickListener: (newsItem: NewsItem) -> Unit?
+    ) {
         this.newsItem = newsItem
         titleView.text = buildTitleSpannable(newsItem)
         urlView.text = newsItem.domain
-        presenter.loadNewsItemIcon(iconView, newsItem.url)
+        iconLoader?.invoke(iconView, newsItem.url)
+        itemView.setOnClickListener { clickListener(newsItem) }
     }
 
     private fun buildTitleSpannable(newsItem: NewsItem): CharSequence {
