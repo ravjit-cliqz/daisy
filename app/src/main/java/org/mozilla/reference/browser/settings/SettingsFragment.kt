@@ -21,6 +21,8 @@ import org.mozilla.reference.browser.R.string.pref_key_make_default_browser
 import org.mozilla.reference.browser.R.string.pref_key_remote_debugging
 import org.mozilla.reference.browser.R.string.pref_key_about_page
 import org.mozilla.reference.browser.R.string.pref_key_privacy
+import org.mozilla.reference.browser.R.string.pref_key_show_news_view
+import org.mozilla.reference.browser.ext.preferences
 import org.mozilla.reference.browser.ext.requireComponents
 
 @Suppress("TooManyFunctions")
@@ -57,6 +59,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val remoteDebuggingKey = context?.getPreferenceKey(pref_key_remote_debugging)
         val aboutPageKey = context?.getPreferenceKey(pref_key_about_page)
         val privacyKey = context?.getPreferenceKey(pref_key_privacy)
+        val showNewsViewKey = context?.getPreferenceKey(pref_key_show_news_view)
 
         val preferenceSignIn = findPreference(signInKey)
         val preferencePairSignIn = findPreference(signInPairKey)
@@ -65,6 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val preferenceRemoteDebugging = findPreference(remoteDebuggingKey)
         val preferenceAboutPage = findPreference(aboutPageKey)
         val preferencePrivacy = findPreference(privacyKey)
+        val preferenceShowNewsView = findPreference(showNewsViewKey)
 
         val accountManager = requireComponents.backgroundServices.accountManager
         if (accountManager.authenticatedAccount() != null) {
@@ -85,6 +89,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preferenceRemoteDebugging.onPreferenceChangeListener = getChangeListenerForRemoteDebugging()
         preferenceAboutPage.onPreferenceClickListener = getAboutPageListener()
         preferencePrivacy.onPreferenceClickListener = getClickListenerForPrivacy()
+        preferenceShowNewsView.onPreferenceChangeListener = getChangeListenerForShowNewsView()
     }
 
     private fun getClickListenerForMakeDefaultBrowser(): OnPreferenceClickListener {
@@ -161,6 +166,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 ?.replace(android.R.id.content, AboutFragment())
                 ?.addToBackStack(null)
                 ?.commit()
+            true
+        }
+    }
+
+    private fun getChangeListenerForShowNewsView(): OnPreferenceChangeListener {
+        return OnPreferenceChangeListener { _, newValue ->
+            requireContext().preferences().shouldShowNewsView = newValue as Boolean
             true
         }
     }

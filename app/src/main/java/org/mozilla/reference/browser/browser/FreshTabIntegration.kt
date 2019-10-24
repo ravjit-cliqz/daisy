@@ -15,15 +15,17 @@ import mozilla.components.browser.toolbar.BrowserToolbar
 import mozilla.components.concept.engine.EngineView
 import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.support.base.feature.LifecycleAwareFeature
+import org.mozilla.reference.browser.ext.preferences
 
 class FreshTabIntegration(
+    private val context: Context,
     toolbar: BrowserToolbar,
     freshTab: FreshTab,
     engineView: EngineView,
     sessionManager: SessionManager
 ) : LifecycleAwareFeature {
 
-    private var feature: NewsFeature? = null
+    private var newsFeature: NewsFeature? = null
     private var icons: BrowserIcons? = null
 
     init {
@@ -31,22 +33,25 @@ class FreshTabIntegration(
     }
 
     override fun start() {
-        feature?.start()
+        if (context.preferences().shouldShowNewsView) {
+            newsFeature?.start()
+        } else {
+            newsFeature?.hideNews()
+        }
     }
 
     override fun stop() {
-        feature?.stop()
+        newsFeature?.stop()
     }
 
     fun addNewsFeature(
-        context: Context,
         newsView: NewsView,
         lifecycleScope: LifecycleCoroutineScope,
         loadUrl: SessionUseCases.DefaultLoadUrlUseCase,
         newsUseCase: GetNewsUseCase,
         icons: BrowserIcons
     ): FreshTabIntegration {
-        feature = NewsFeature(
+        newsFeature = NewsFeature(
             context,
             newsView,
             lifecycleScope,

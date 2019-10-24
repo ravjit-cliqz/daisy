@@ -40,10 +40,14 @@ class NewsFeature(
                 if (this is Success) {
                     newsView.displayNews(data, presenter.isNewsViewExpanded)
                 } else {
-                    newsView.hideNews()
+                    hideNews()
                 }
             }
         }
+    }
+
+    fun hideNews() {
+        newsView.hideNews()
     }
 
     override fun stop() {
