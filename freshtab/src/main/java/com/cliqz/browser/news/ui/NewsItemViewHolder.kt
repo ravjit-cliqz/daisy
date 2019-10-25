@@ -33,11 +33,16 @@ class NewsItemViewHolder(
 
     private var newsItem: NewsItem? = null
 
-    fun bind(newsItem: NewsItem, icons: BrowserIcons?) {
+    fun bind(
+        newsItem: NewsItem,
+        icons: BrowserIcons?,
+        clickListener : ((newsItem: NewsItem) -> Unit)
+    ) {
         this.newsItem = newsItem
         titleView.text = buildTitleSpannable(newsItem)
         urlView.text = newsItem.domain
         icons?.loadIntoView(iconView, IconRequest(newsItem.url))
+        itemView.setOnClickListener { clickListener(newsItem) }
     }
 
     private fun buildTitleSpannable(newsItem: NewsItem): CharSequence {
