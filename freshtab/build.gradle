@@ -31,6 +31,7 @@ dependencies {
     implementation Deps.mozilla_concept_fetch
 
     implementation Deps.mozilla_browser_session
+    implementation Deps.mozilla_browser_icons
 
     implementation Deps.mozilla_feature_session
 

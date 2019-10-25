@@ -11,6 +11,8 @@ import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.cliqz.browser.freshtab.R
 import com.cliqz.browser.news.data.NewsItem
+import mozilla.components.browser.icons.BrowserIcons
+import mozilla.components.browser.icons.IconRequest
 import java.util.Locale
 
 class NewsItemViewHolder(
@@ -30,16 +32,11 @@ class NewsItemViewHolder(
 
     private var newsItem: NewsItem? = null
 
-    fun bind(
-        newsItem: NewsItem,
-        iconLoader: ((iconView: ImageView, iconUrl: String) -> Unit)?,
-        clickListener: (newsItem: NewsItem) -> Unit?
-    ) {
+    fun bind(newsItem: NewsItem, icons: BrowserIcons?) {
         this.newsItem = newsItem
         titleView.text = buildTitleSpannable(newsItem)
         urlView.text = newsItem.domain
-        iconLoader?.invoke(iconView, newsItem.url)
-        itemView.setOnClickListener { clickListener(newsItem) }
+        icons?.loadIntoView(iconView, IconRequest(newsItem.url))
     }
 
     private fun buildTitleSpannable(newsItem: NewsItem): CharSequence {

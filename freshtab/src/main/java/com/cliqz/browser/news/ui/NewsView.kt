@@ -13,6 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.cliqz.browser.freshtab.R
 import com.cliqz.browser.news.data.NewsItem
+import mozilla.components.browser.icons.BrowserIcons
 import kotlin.math.pow
 
 class NewsView @JvmOverloads constructor(
@@ -68,7 +69,7 @@ class NewsView @JvmOverloads constructor(
         }
     }
 
-    override fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean) {
+    override fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean, icons: BrowserIcons?) {
         view.visibility = View.GONE
         if (newsList.isNullOrEmpty()) {
             return
@@ -78,9 +79,7 @@ class NewsView @JvmOverloads constructor(
         val inflater = LayoutInflater.from(context)
         for (newsItem in newsList) {
             val itemView = inflater.inflate(R.layout.three_line_list_item_layout, topNewsListView, false)
-            NewsItemViewHolder(itemView, this).bind(newsItem, presenter?.loadNewsItemIcon) {
-                presenter?.onOpenInNormalTab(it)
-            }
+            NewsItemViewHolder(itemView, this).bind(newsItem, icons)
             topNewsListView.addView(itemView)
         }
         toggleNewsLabelIcon(isNewsViewExpanded)

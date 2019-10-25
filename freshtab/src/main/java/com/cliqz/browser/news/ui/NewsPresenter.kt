@@ -2,7 +2,6 @@ package com.cliqz.browser.news.ui
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.widget.ImageView
 import com.cliqz.browser.news.data.NewsItem
 import com.cliqz.browser.news.data.Result
 import com.cliqz.browser.news.domain.GetNewsUseCase
@@ -10,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import mozilla.components.browser.icons.BrowserIcons
 import mozilla.components.feature.session.SessionUseCases.LoadUrlUseCase
 
 class DefaultNewsPresenter(
@@ -18,8 +18,7 @@ class DefaultNewsPresenter(
     private val scope: CoroutineScope,
     private val loadUrlUseCase: LoadUrlUseCase,
     private val getNewsUseCase: GetNewsUseCase,
-    private val onNewsItemSelected: (() -> Unit)? = null,
-    override val loadNewsItemIcon: ((view: ImageView, url: String) -> Unit)? = null
+    private val icons: BrowserIcons? = null
 ) : NewsPresenter {
 
     override var isNewsViewExpanded: Boolean
@@ -34,7 +33,7 @@ class DefaultNewsPresenter(
         scope.launch {
             result.await().run {
                 if (this is Result.Success) {
-                    newsView.displayNews(data, isNewsViewExpanded)
+                    newsView.displayNews(data, isNewsViewExpanded, icons)
                 } else {
                     newsView.hideNews()
                 }
@@ -57,7 +56,6 @@ class DefaultNewsPresenter(
 
     override fun onOpenInNormalTab(item: NewsItem) {
         loadUrlUseCase.invoke(item.url)
-        onNewsItemSelected?.invoke()
     }
 
     private fun isNewsViewExpanded(context: Context): Boolean {
@@ -81,8 +79,6 @@ interface NewsPresenter {
 
     var isNewsViewExpanded: Boolean
 
-    val loadNewsItemIcon: ((view: ImageView, url: String) -> Unit)?
-
     suspend fun getNews(): Result<List<NewsItem>>
 
     fun onOpenInNormalTab(item: NewsItem)
@@ -91,7 +87,7 @@ interface NewsPresenter {
 
     interface View {
 
-        fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean)
+        fun displayNews(newsList: List<NewsItem>, isNewsViewExpanded: Boolean, icons: BrowserIcons?)
 
         fun hideNews()
 
