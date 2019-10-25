@@ -11,6 +11,7 @@ import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.cliqz.browser.freshtab.R
 import com.cliqz.browser.news.data.NewsItem
+
 import mozilla.components.browser.icons.BrowserIcons
 import mozilla.components.browser.icons.IconRequest
 import java.util.Locale
