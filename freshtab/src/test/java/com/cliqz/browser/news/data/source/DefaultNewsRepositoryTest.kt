@@ -20,7 +20,7 @@ class DefaultNewsRepositoryTest {
 
     private val remoteNewsDataSource = mockk<NewsRemoteDataSource>()
 
-    private val newsRepository = spyk(DefaultNewsRepository(remoteNewsDataSource))
+    private val newsRepository = spyk(DefaultNewsRepository(remoteNewsDataSource, mockk(relaxed = true)))
 
     @Test
     fun `getNews second and subsequent api calls return cache`() = runBlockingTest {

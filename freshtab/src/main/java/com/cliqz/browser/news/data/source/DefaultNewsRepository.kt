@@ -1,12 +1,16 @@
 package com.cliqz.browser.news.data.source
 
+import androidx.annotation.VisibleForTesting
 import com.cliqz.browser.news.data.NewsItem
 import com.cliqz.browser.news.data.Result
 import com.cliqz.browser.news.data.Result.Success
+import com.cliqz.browser.news.data.Result.Error
+import com.cliqz.browser.news.data.source.remote.NewsLocalDataSource
 import com.cliqz.browser.news.data.source.remote.NewsRemoteDataSource
 
 class DefaultNewsRepository(
-    private val newsRemoteDataSource: NewsRemoteDataSource
+    private val newsRemoteDataSource: NewsRemoteDataSource,
+    private val newsLocalDataSource: NewsLocalDataSource
 ) : NewsRepository {
 
     private var cachedNews: List<NewsItem> = emptyList()
@@ -24,9 +28,21 @@ class DefaultNewsRepository(
     }
 
     private suspend fun fetchNewsFromRemoteOrLocal(): Result<List<NewsItem>> {
-        // TODO: We can have a local news repository (in db/prefs) populating the newsview
-        //  even when app is offline
-        return newsRemoteDataSource.getNews()
+        when (val remoteNewsList = newsRemoteDataSource.getNews()) {
+            is Error -> {
+                // TODO: Log that fetching from remote source failed
+            }
+            is Success -> {
+                refreshLocalDataSource(remoteNewsList.data)
+                return remoteNewsList
+            }
+        }
+
+        val localNewsList = newsLocalDataSource.getNews()
+        if (localNewsList is Success) {
+            return localNewsList
+        }
+        return Error(Exception("Error fetching from remote and local news source"))
     }
 
     private fun cacheNews(newsList: List<NewsItem>) {
@@ -34,8 +50,13 @@ class DefaultNewsRepository(
         lastCachedOn = System.currentTimeMillis()
     }
 
+    @VisibleForTesting
     fun hasCacheExpired(): Boolean {
         return lastCachedOn != 0L && (System.currentTimeMillis() - lastCachedOn) > CACHE_PERIOD
+    }
+
+    private suspend fun refreshLocalDataSource(news: List<NewsItem>) {
+        newsLocalDataSource.saveNews(news)
     }
 
     companion object {
@@ -45,9 +66,10 @@ class DefaultNewsRepository(
         @Volatile
         private var instance: NewsRepository? = null
 
-        fun getInstance(newsRemoteDataSource: NewsRemoteDataSource) =
+        fun getInstance(newsRemoteDataSource: NewsRemoteDataSource,
+                        newsLocalDataSource: NewsLocalDataSource) =
             instance ?: synchronized(this) {
-                instance ?: DefaultNewsRepository(newsRemoteDataSource).also { instance = it }
+                instance ?: DefaultNewsRepository(newsRemoteDataSource, newsLocalDataSource).also { instance = it }
             }
     }
 }
