@@ -58,7 +58,7 @@ class TabsTrayFragment : Fragment(), BackHandler, SessionManager.Observer {
         super.onSessionRemoved(session)
         requireComponents.core.sessionManager.apply {
             if (size == 0) {
-                add(Session("about:blank"), selected = true)
+                add(Session(""), selected = true)
             }
         }
     }
@@ -66,7 +66,7 @@ class TabsTrayFragment : Fragment(), BackHandler, SessionManager.Observer {
     override fun onAllSessionsRemoved() {
         super.onAllSessionsRemoved()
         requireComponents.core.sessionManager.apply {
-            add(Session("about:blank"), selected = true)
+            add(Session(""), selected = true)
         }
     }
 

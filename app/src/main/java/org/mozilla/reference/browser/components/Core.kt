@@ -79,7 +79,7 @@ class Core(private val context: Context) {
             sessionStorage.restore()?.let { snapshot -> restore(snapshot) }
 
             if (size == 0) {
-                add(Session("about:blank"), selected = true)
+                add(Session(""), selected = true)
             }
             sessionStorage.autoSave(this)
                 .periodicallyInForeground(interval = 30, unit = TimeUnit.SECONDS)
