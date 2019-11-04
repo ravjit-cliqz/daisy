@@ -5,6 +5,7 @@
 package org.mozilla.reference.browser.components
 
 import android.content.Context
+import com.cliqz.browser.freshtab.isFreshTab
 import mozilla.components.browser.session.SessionManager
 import mozilla.components.feature.customtabs.CustomTabIntentProcessor
 import mozilla.components.feature.intent.processing.TabIntentProcessor
@@ -12,6 +13,7 @@ import mozilla.components.feature.pwa.ManifestStorage
 import mozilla.components.feature.pwa.intent.WebAppIntentProcessor
 import mozilla.components.feature.search.SearchUseCases
 import mozilla.components.feature.session.SessionUseCases
+import mozilla.components.feature.tabs.TabsUseCases
 
 /**
  * Component group for miscellaneous components.
@@ -20,7 +22,8 @@ class Utilities(
     private val context: Context,
     private val sessionManager: SessionManager,
     private val sessionUseCases: SessionUseCases,
-    private val searchUseCases: SearchUseCases
+    private val searchUseCases: SearchUseCases,
+    private val tabsUseCases: TabsUseCases
 ) {
 
     /**
@@ -40,5 +43,24 @@ class Utilities(
     val intentProcessors by lazy {
         externalIntentProcessors +
             TabIntentProcessor(sessionManager, sessionUseCases.loadUrl, searchUseCases.newTabSearch)
+    }
+
+    val startSearchIntentProcessor by lazy {
+        StartSearchIntentProcessor(tabsUseCases, sessionManager)
+    }
+}
+
+class StartSearchIntentProcessor(
+    private val tabsUseCases: TabsUseCases,
+    private val sessionManager: SessionManager
+) {
+    fun process(openToSearch: Boolean) {
+        if (openToSearch) {
+            sessionManager.selectedSession?.let { selectedSession ->
+                if (!selectedSession.url.isFreshTab()) {
+                    tabsUseCases.addTab("", selectTab = true)
+                }
+            } ?: tabsUseCases.addTab("", selectTab = true)
+        }
     }
 }
