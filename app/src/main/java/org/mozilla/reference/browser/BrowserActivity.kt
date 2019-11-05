@@ -76,7 +76,7 @@ open class BrowserActivity : AppCompatActivity() {
         components.utils.startSearchIntentProcessor.process(openToSearch)
         if (openToSearch) {
             supportFragmentManager.beginTransaction().apply {
-                replace(R.id.container, BrowserFragment.create(openToSearch = true))
+                replace(R.id.container, createBrowserFragment(null, openToSearch = true))
                 commit()
             }
         }
