@@ -17,7 +17,8 @@ import kotlin.properties.Delegates
  */
 class HistoryAdapter(
     private val browserIcons: BrowserIcons,
-    private val historyItemClickListener: (position: Int) -> Unit
+    private val historyItemClickListener: (position: Int) -> Unit,
+    private val historyItemDeleteListener: (position: Int) -> Unit
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     var items: List<VisitInfo> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
@@ -35,11 +36,14 @@ class HistoryAdapter(
         LayoutContainer {
 
         fun bind(historyItem: VisitInfo) {
-            containerView.history_item_title.text = if (!historyItem.title.isNullOrBlank())
-                historyItem.title else containerView.resources.getString(R.string.history_title_untitled)
-            containerView.url_view.text = historyItem.url
-            browserIcons.loadIntoView(containerView.icon_view, IconRequest(historyItem.url))
-            containerView.setOnClickListener { historyItemClickListener(adapterPosition) }
+            containerView.apply {
+                history_item_title.text = if (!historyItem.title.isNullOrBlank())
+                    historyItem.title else resources.getString(R.string.history_title_untitled)
+                url_view.text = historyItem.url
+                browserIcons.loadIntoView(icon_view, IconRequest(historyItem.url))
+                setOnClickListener { historyItemClickListener(adapterPosition) }
+                delete_btn.setOnClickListener { historyItemDeleteListener(adapterPosition) }
+            }
         }
     }
 }

@@ -46,6 +46,15 @@ class HistoryViewModel(
         }
     }
 
+    fun onDeleteHistoryItemClicked(position: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            historyItems.value?.get(position)?.let {
+                historyUseCases.deleteHistory(it)
+                historyItems.postValue(historyUseCases.getHistory())
+            }
+        }
+    }
+
     private fun fetchHistoryItems() {
         viewModelScope.launch(Dispatchers.IO) {
             historyItems.postValue(historyUseCases.getHistory())

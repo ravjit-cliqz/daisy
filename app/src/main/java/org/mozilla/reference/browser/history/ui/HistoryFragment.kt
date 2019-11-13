@@ -27,7 +27,10 @@ class HistoryFragment : Fragment(), BackHandler {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        historyAdapter = HistoryAdapter(requireComponents.core.icons, ::onItemClicked)
+        historyAdapter = HistoryAdapter(
+            requireComponents.core.icons,
+            ::onItemClicked,
+            ::onDeleteHistoryItemClicked)
         historyViewModel = ViewModelProviders.of(this,
             ViewModelFactory.getInstance(context.application)).get(HistoryViewModel::class.java)
         historyViewModel.getHistoryItems().observe(this, Observer {
@@ -55,6 +58,10 @@ class HistoryFragment : Fragment(), BackHandler {
     private fun onItemClicked(position: Int) {
         historyViewModel.onItemClicked(position)
         onBackPressed()
+    }
+
+    private fun onDeleteHistoryItemClicked(position: Int) {
+        historyViewModel.onDeleteHistoryItemClicked(position)
     }
 
     override fun onBackPressed(): Boolean {
