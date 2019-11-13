@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import mozilla.components.concept.storage.VisitInfo
 import mozilla.components.feature.session.SessionUseCases
 import org.mozilla.reference.browser.history.usecases.HistoryUseCases
+import org.mozilla.reference.browser.utils.SingleLiveEvent
 
 /**
  * @author Ravjit Uppal
@@ -19,6 +20,8 @@ class HistoryViewModel(
 ) : ViewModel() {
 
     private val historyItems = MutableLiveData<List<VisitInfo>>().apply { value = emptyList() }
+
+    internal val clearedHistory = SingleLiveEvent<Void>()
 
     init {
         fetchHistoryItems()
@@ -32,6 +35,14 @@ class HistoryViewModel(
         val historyItem = historyItems.value?.get(position)
         if (historyItem != null) {
             sessionUseCases.loadUrl(historyItem.url)
+        }
+    }
+
+    fun clearHistoryClicked() {
+        viewModelScope.launch(Dispatchers.IO) {
+            historyUseCases.clearAllHistory()
+            historyItems.postValue(emptyList())
+            clearedHistory.postCall()
         }
     }
 

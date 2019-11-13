@@ -14,5 +14,12 @@ class HistoryUseCases(historyStorage: HistoryStorage) {
         }
     }
 
+    class ClearAllHistoryUseCase(private val historyStorage: HistoryStorage) {
+        suspend operator fun invoke() {
+            historyStorage.deleteEverything()
+        }
+    }
+
     val getHistory: GetHistoryUseCase by lazy { GetHistoryUseCase(historyStorage) }
+    val clearAllHistory: ClearAllHistoryUseCase by lazy { ClearAllHistoryUseCase(historyStorage) }
 }
