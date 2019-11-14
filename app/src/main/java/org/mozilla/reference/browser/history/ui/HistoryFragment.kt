@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -35,10 +34,14 @@ class HistoryFragment : Fragment(), BackHandler {
         historyViewModel = ViewModelProviders.of(this,
             ViewModelFactory.getInstance(context.application)).get(HistoryViewModel::class.java)
         historyViewModel.getHistoryItems().observe(this, Observer {
+            if (it.isEmpty()) {
+                history_list.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+            } else {
+                history_list.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
             historyAdapter.items = it
-        })
-        historyViewModel.clearedHistory.observe(this, Observer {
-            Toast.makeText(context, R.string.history_cleared_msg, Toast.LENGTH_LONG).show()
         })
     }
 

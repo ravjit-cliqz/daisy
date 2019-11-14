@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.clear_all_history.view.*
 import kotlinx.android.synthetic.main.two_line_list_item_layout.view.*
 import mozilla.components.browser.icons.BrowserIcons
 import mozilla.components.browser.icons.IconRequest
@@ -49,7 +50,7 @@ class HistoryAdapter(
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind() {
-            containerView.setOnClickListener { historyDeleteAllListener() }
+            containerView.clear_history.setOnClickListener { historyDeleteAllListener() }
         }
     }
 
@@ -64,8 +65,8 @@ class HistoryAdapter(
                     historyItem.title else resources.getString(R.string.history_title_untitled)
                 url_view.text = historyItem.url
                 browserIcons.loadIntoView(icon_view, IconRequest(historyItem.url))
-                setOnClickListener { historyItemClickListener(adapterPosition) }
-                delete_btn.setOnClickListener { historyItemDeleteListener(adapterPosition) }
+                setOnClickListener { historyItemClickListener(adapterPosition - 1) }
+                delete_btn.setOnClickListener { historyItemDeleteListener(adapterPosition - 1) }
             }
         }
     }

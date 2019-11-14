@@ -21,8 +21,6 @@ class HistoryViewModel(
 
     private val historyItems = MutableLiveData<List<VisitInfo>>().apply { value = emptyList() }
 
-    internal val clearedHistory = SingleLiveEvent<Void>()
-
     init {
         fetchHistoryItems()
     }
@@ -42,7 +40,6 @@ class HistoryViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             historyUseCases.clearAllHistory()
             historyItems.postValue(emptyList())
-            clearedHistory.postCall()
         }
     }
 

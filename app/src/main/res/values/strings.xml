@@ -160,7 +160,7 @@
     <!-- History -->
     <string name="history_title_untitled">Untitled</string>
     <string name="history_clear_all">Clear Browsing History</string>
-    <string name="history_cleared_msg">Browsing History Cleared</string>
+    <string name="no_history_available">No history to show</string>
 
     <!-- News -->
     <string name="news_label">News</string>
