@@ -18,21 +18,44 @@ import kotlin.properties.Delegates
 class HistoryAdapter(
     private val browserIcons: BrowserIcons,
     private val historyItemClickListener: (position: Int) -> Unit,
-    private val historyItemDeleteListener: (position: Int) -> Unit
-) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+    private val historyItemDeleteListener: (position: Int) -> Unit,
+    private val historyDeleteAllListener: () -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: List<VisitInfo> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(parent.inflate(R.layout.two_line_list_item_layout))
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_DELETE_ALL) {
+            DeleteAllViewHolder(parent.inflate(R.layout.clear_all_history))
+        } else {
+            HistoryItemViewHolder(parent.inflate(R.layout.two_line_list_item_layout))
+        }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder.itemViewType == TYPE_DELETE_ALL) {
+            (holder as DeleteAllViewHolder).bind()
+        } else {
+            (holder as HistoryItemViewHolder).bind(items[position - 1])
+        }
+    }
 
-    inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+    override fun getItemCount(): Int = items.size + 1
+
+    override fun getItemViewType(position: Int) = if (position == 0) TYPE_DELETE_ALL else TYPE_ITEM
+
+    inner class DeleteAllViewHolder(
+        override val containerView: View
+    ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+
+        fun bind() {
+            containerView.setOnClickListener { historyDeleteAllListener() }
+        }
+    }
+
+    inner class HistoryItemViewHolder(
+        override val containerView: View
+    ) : RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
         fun bind(historyItem: VisitInfo) {
@@ -45,5 +68,10 @@ class HistoryAdapter(
                 delete_btn.setOnClickListener { historyItemDeleteListener(adapterPosition) }
             }
         }
+    }
+
+    companion object {
+        private const val TYPE_DELETE_ALL = 0
+        private const val TYPE_ITEM = 1
     }
 }
