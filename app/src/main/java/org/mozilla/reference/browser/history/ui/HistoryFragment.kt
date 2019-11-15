@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -68,7 +69,20 @@ class HistoryFragment : Fragment(), BackHandler {
     }
 
     private fun clearHistoryClicked() {
-        historyViewModel.clearHistoryClicked()
+        context?.let {
+            AlertDialog.Builder(it).apply {
+                setMessage(R.string.history_clear_all_dialog_msg)
+                setPositiveButton(R.string.history_clear_all_dialog_postive_btn) { dialog, _ ->
+                    historyViewModel.clearHistoryClicked()
+                    dialog.dismiss()
+                }
+                setNegativeButton(R.string.history_clear_all_dialog_negative_btn) { dialog, _ ->
+                    dialog.cancel()
+                }
+                create()
+                show()
+            }
+        }
     }
 
     override fun onBackPressed(): Boolean {

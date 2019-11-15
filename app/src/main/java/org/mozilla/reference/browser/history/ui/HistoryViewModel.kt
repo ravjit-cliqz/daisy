@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import mozilla.components.concept.storage.VisitInfo
 import mozilla.components.feature.session.SessionUseCases
 import org.mozilla.reference.browser.history.usecases.HistoryUseCases
-import org.mozilla.reference.browser.utils.SingleLiveEvent
 
 /**
  * @author Ravjit Uppal
