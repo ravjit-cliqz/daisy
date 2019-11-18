@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_history.*
-import mozilla.components.concept.storage.VisitInfo
 import mozilla.components.support.base.feature.BackHandler
 import org.mozilla.reference.browser.R
 import org.mozilla.reference.browser.ViewModelFactory
 import org.mozilla.reference.browser.browser.BrowserFragment
 import org.mozilla.reference.browser.ext.application
 import org.mozilla.reference.browser.ext.requireComponents
+import org.mozilla.reference.browser.history.data.HistoryItem
 
 /**
  * @author Ravjit Uppal
@@ -32,7 +32,8 @@ class HistoryFragment : Fragment(), BackHandler {
             requireComponents.core.icons,
             ::openHistoryItem,
             ::deleteHistoryItem,
-            ::showClearAllHistoryDialog)
+            ::showClearAllHistoryDialog
+        )
         historyViewModel = ViewModelProviders.of(this,
             ViewModelFactory.getInstance(context.application)).get(HistoryViewModel::class.java)
         historyViewModel.getHistoryItems().observe(this, Observer {
@@ -43,7 +44,7 @@ class HistoryFragment : Fragment(), BackHandler {
                 history_list.visibility = View.VISIBLE
                 empty_view.visibility = View.GONE
             }
-            historyAdapter.items = it
+            historyAdapter.submitList(it)
         })
     }
 
@@ -60,12 +61,12 @@ class HistoryFragment : Fragment(), BackHandler {
         history_list.adapter = historyAdapter
     }
 
-    private fun openHistoryItem(item: VisitInfo) {
+    private fun openHistoryItem(item: HistoryItem) {
         historyViewModel.openHistoryItem(item)
         onBackPressed()
     }
 
-    private fun deleteHistoryItem(item: VisitInfo) {
+    private fun deleteHistoryItem(item: HistoryItem) {
         historyViewModel.deleteHistoryItem(item)
     }
 

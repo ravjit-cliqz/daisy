@@ -1,13 +1,13 @@
 package org.mozilla.reference.browser.history.ui
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import mozilla.components.concept.storage.VisitInfo
 import mozilla.components.feature.session.SessionUseCases
+import org.mozilla.reference.browser.history.data.HistoryItem
 import org.mozilla.reference.browser.history.usecases.HistoryUseCases
 
 /**
@@ -18,37 +18,35 @@ class HistoryViewModel(
     private val sessionUseCases: SessionUseCases
 ) : ViewModel() {
 
-    private val historyItems = MutableLiveData<List<VisitInfo>>().apply { value = emptyList() }
+    private lateinit var historyItems: LiveData<PagedList<HistoryItem>>
 
     init {
         fetchHistoryItems()
     }
 
-    fun getHistoryItems(): LiveData<List<VisitInfo>> {
+    fun getHistoryItems(): LiveData<PagedList<HistoryItem>> {
         return historyItems
     }
 
-    fun openHistoryItem(item: VisitInfo) {
+    fun openHistoryItem(item: HistoryItem) {
         sessionUseCases.loadUrl(item.url)
     }
 
-    fun deleteHistoryItem(item: VisitInfo) {
+    fun deleteHistoryItem(item: HistoryItem) {
         viewModelScope.launch(Dispatchers.IO) {
             historyUseCases.deleteHistory(item)
-            historyItems.postValue(historyUseCases.getHistory())
+            historyItems.value?.dataSource?.invalidate()
         }
     }
 
     fun clearAllHistory() {
         viewModelScope.launch(Dispatchers.IO) {
             historyUseCases.clearAllHistory()
-            historyItems.postValue(emptyList())
+            historyItems.value?.dataSource?.invalidate()
         }
     }
 
     private fun fetchHistoryItems() {
-        viewModelScope.launch(Dispatchers.IO) {
-            historyItems.postValue(historyUseCases.getHistory())
-        }
+        historyItems = historyUseCases.getPagedHistory()
     }
 }
