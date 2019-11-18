@@ -18,8 +18,8 @@ import kotlin.properties.Delegates
  */
 class HistoryAdapter(
     private val browserIcons: BrowserIcons,
-    private val historyItemClickListener: (position: Int) -> Unit,
-    private val historyItemDeleteListener: (position: Int) -> Unit,
+    private val historyItemClickListener: (item: VisitInfo) -> Unit,
+    private val historyItemDeleteListener: (item: VisitInfo) -> Unit,
     private val historyDeleteAllListener: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -47,7 +47,8 @@ class HistoryAdapter(
 
     inner class DeleteAllViewHolder(
         override val containerView: View
-    ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    ) : RecyclerView.ViewHolder(containerView),
+        LayoutContainer {
 
         fun bind() {
             containerView.clear_history.setOnClickListener { historyDeleteAllListener() }
@@ -65,8 +66,8 @@ class HistoryAdapter(
                     historyItem.title else resources.getString(R.string.history_title_untitled)
                 url_view.text = historyItem.url
                 browserIcons.loadIntoView(icon_view, IconRequest(historyItem.url))
-                setOnClickListener { historyItemClickListener(adapterPosition - 1) }
-                delete_btn.setOnClickListener { historyItemDeleteListener(adapterPosition - 1) }
+                setOnClickListener { historyItemClickListener(historyItem) }
+                delete_btn.setOnClickListener { historyItemDeleteListener(historyItem) }
             }
         }
     }

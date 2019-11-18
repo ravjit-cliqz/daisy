@@ -28,26 +28,21 @@ class HistoryViewModel(
         return historyItems
     }
 
-    fun onItemClicked(position: Int) {
-        val historyItem = historyItems.value?.get(position)
-        if (historyItem != null) {
-            sessionUseCases.loadUrl(historyItem.url)
+    fun openHistoryItem(item: VisitInfo) {
+        sessionUseCases.loadUrl(item.url)
+    }
+
+    fun deleteHistoryItem(item: VisitInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            historyUseCases.deleteHistory(item)
+            historyItems.postValue(historyUseCases.getHistory())
         }
     }
 
-    fun clearHistoryClicked() {
+    fun clearAllHistory() {
         viewModelScope.launch(Dispatchers.IO) {
             historyUseCases.clearAllHistory()
             historyItems.postValue(emptyList())
-        }
-    }
-
-    fun onDeleteHistoryItemClicked(position: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            historyItems.value?.get(position)?.let {
-                historyUseCases.deleteHistory(it)
-                historyItems.postValue(historyUseCases.getHistory())
-            }
         }
     }
 

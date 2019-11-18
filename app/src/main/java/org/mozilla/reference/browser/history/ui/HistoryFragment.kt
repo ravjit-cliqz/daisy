@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_history.*
+import mozilla.components.concept.storage.VisitInfo
 import mozilla.components.support.base.feature.BackHandler
 import org.mozilla.reference.browser.R
 import org.mozilla.reference.browser.ViewModelFactory
@@ -29,9 +30,9 @@ class HistoryFragment : Fragment(), BackHandler {
         super.onAttach(context)
         historyAdapter = HistoryAdapter(
             requireComponents.core.icons,
-            ::onItemClicked,
-            ::onDeleteHistoryItemClicked,
-            ::clearHistoryClicked)
+            ::openHistoryItem,
+            ::deleteHistoryItem,
+            ::showClearAllHistoryDialog)
         historyViewModel = ViewModelProviders.of(this,
             ViewModelFactory.getInstance(context.application)).get(HistoryViewModel::class.java)
         historyViewModel.getHistoryItems().observe(this, Observer {
@@ -59,21 +60,21 @@ class HistoryFragment : Fragment(), BackHandler {
         history_list.adapter = historyAdapter
     }
 
-    private fun onItemClicked(position: Int) {
-        historyViewModel.onItemClicked(position)
+    private fun openHistoryItem(item: VisitInfo) {
+        historyViewModel.openHistoryItem(item)
         onBackPressed()
     }
 
-    private fun onDeleteHistoryItemClicked(position: Int) {
-        historyViewModel.onDeleteHistoryItemClicked(position)
+    private fun deleteHistoryItem(item: VisitInfo) {
+        historyViewModel.deleteHistoryItem(item)
     }
 
-    private fun clearHistoryClicked() {
+    private fun showClearAllHistoryDialog() {
         context?.let {
             AlertDialog.Builder(it).apply {
                 setMessage(R.string.history_clear_all_dialog_msg)
                 setPositiveButton(R.string.history_clear_all_dialog_postive_btn) { dialog, _ ->
-                    historyViewModel.clearHistoryClicked()
+                    historyViewModel.clearAllHistory()
                     dialog.dismiss()
                 }
                 setNegativeButton(R.string.history_clear_all_dialog_negative_btn) { dialog, _ ->
