@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.cliqz.browser.freshtab.FreshTab
 import com.cliqz.browser.freshtab.FreshTabFeature
+import com.cliqz.browser.news.domain.GetNewsUseCase
 import com.cliqz.browser.news.ui.NewsFeature
 import com.cliqz.browser.news.ui.NewsView
-import com.cliqz.browser.news.domain.GetNewsUseCase
 import mozilla.components.browser.icons.BrowserIcons
 import mozilla.components.browser.session.SessionManager
 import mozilla.components.browser.toolbar.BrowserToolbar
@@ -15,6 +15,9 @@ import mozilla.components.concept.engine.EngineView
 import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import org.mozilla.reference.browser.ext.preferences
+import org.mozilla.reference.browser.history.usecases.HistoryUseCases
+import org.mozilla.reference.browser.topsites.ui.TopSitesFeature
+import org.mozilla.reference.browser.topsites.ui.TopSitesView
 
 class FreshTabIntegration(
     private val context: Context,
@@ -26,6 +29,7 @@ class FreshTabIntegration(
 ) : LifecycleAwareFeature {
 
     private var newsFeature: NewsFeature? = null
+    private var topSitesFeature: TopSitesFeature? = null
 
     init {
         FreshTabFeature(awesomeBar, toolbar, freshTab, engineView, sessionManager)
@@ -34,6 +38,7 @@ class FreshTabIntegration(
     override fun start() {
         if (context.preferences().shouldShowNewsView) {
             newsFeature?.start()
+            topSitesFeature?.start()
         } else {
             newsFeature?.hideNews()
         }
@@ -58,6 +63,20 @@ class FreshTabIntegration(
             loadUrl,
             newsUseCase,
             icons)
+        return this
+    }
+
+    fun addTopSitesFeature(
+        topSitesView: TopSitesView,
+        loadUrlUseCase: SessionUseCases.LoadUrlUseCase,
+        getTopSitesUseCase: HistoryUseCases.GetTopSitesUseCase,
+        browserIcons: BrowserIcons
+    ) : FreshTabIntegration {
+        topSitesFeature = TopSitesFeature(
+            topSitesView,
+            loadUrlUseCase,
+            getTopSitesUseCase,
+            browserIcons)
         return this
     }
 }
